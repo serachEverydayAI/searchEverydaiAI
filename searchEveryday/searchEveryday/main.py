@@ -9,36 +9,49 @@ from datetime import datetime
 
 
 text_file = "keyword"
-crwaled_data = "crwaled_data"
+crwaled_data = "crwaledData"
 
 def main():
-    # 1. 단어집에서 단어 읽어오기
     words = read_words(text_file + '.txt')
     print(f'등록된 단어: {words}')
 
     all_articles = []
+    excel_file_path = ''
+    searchWord = ''
     today_date = datetime.today().strftime('%Y%m%d')
-    excel_file_path = f"{crwaled_data}_{today_date}.xlsx"
+
+    for index, word in enumerate(words, start=1):
+        print(f"{index}: {word}")
+        searchWord = word
+        excel_file_path = f"{crwaled_data}_{word}_{today_date}.xlsx"
 
     if os.path.exists(excel_file_path):
         print(f"{excel_file_path} 파일이 존재하므로 엑셀 파일에서 데이터를 불러옵니다.")
         df_articles = pd.read_excel(excel_file_path)
     else:
-        # 2. 단어로 기사 검색
-        for index, word in enumerate(words, start=1):
-            print(f"{index}: {word}")
-
         print(f"{excel_file_path} 파일이 없으므로 기사를 크롤링하여 데이터를 저장합니다.")
-        df_articles = crawl_articles(word, excel_file_path)
+        df_articles = crawl_articles(searchWord, excel_file_path)
 
-        # 이후 처리 로직 추가 가능
+    if df_articles.empty:
+        print(f"{today_date} {words} keyword articles not found. Exiting program.")
+        return 1
+
     all_articles.append(df_articles)
 
-    # 모든 단어에 대한 기사 데이터를 합쳐서 처리 가능
+    if len(all_articles[0]) == 1:
+        print(f"{today_date} {words} keyword article is one. Nothing to cluseter.")
+        return 1
+
     combined_df = pd.concat(all_articles, ignore_index=True)
     #print("최종 기사 데이터:", combined_df)
     # 3. 검색한 기사 분류
     clustered_articles = cluster_articles(df_articles)
+
+    # row 생략 없이 출력
+    pd.set_option('display.max_rows', None)
+    # col 생략 없이 출력
+    pd.set_option('display.max_columns', None)
+    print(f'clustered_articles: {clustered_articles}')
 
     extracted_articles = extract_max_press_level_article(clustered_articles)
 

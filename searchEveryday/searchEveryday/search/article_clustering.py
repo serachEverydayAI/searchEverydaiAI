@@ -1,17 +1,17 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import silhouette_samples, silhouette_score
+import pandas as pd
 
 korean_stop_words = ['의', '가', '이', '은', '는', '을', '를', '에', '와', '과', '도', '로', '에서', '하지만', '또한', '뉴스', '기자', '경우',
                      '기사', '복사', '저작권자', '무단', '송고', '제보', '학습', '활용', '관련', '때문', '최근', '이날', '포트', '오늘', '내일', '영상',
                      '영상편집', '편집', '배포', '금지', '오전', '전재', '재배포', '카카오', '사진', '출처', '가운데', '촬영', '촬영기자', '앵커',
-                     '리포트', '관계자']
+                     '리포트', '관계자', '글쎄', '오늘의', '소식']
 
 MAX_K_VALUE = 100
 MIN_CLUSTER_SIZE = 3  # 최소 클러스터 크기 제한
 
-from sklearn.metrics import silhouette_samples, silhouette_score
 
 def cluster_articles(df_articles, max_k=MAX_K_VALUE):
     # 1. 기사 제목을 추출
@@ -21,7 +21,7 @@ def cluster_articles(df_articles, max_k=MAX_K_VALUE):
     X = vectorizer.fit_transform(titles)
 
     # 2. 최적의 Cluster 수 찾기
-    optimal_k = find_optimal_clusters(X, max_k=max_k)
+    optimal_k, silhouette_avg = find_optimal_clusters(X, max_k=max_k)
 
     # 3. KMeans 사용해 군집화
     kmeans = KMeans(n_clusters=optimal_k, random_state=42)
@@ -32,34 +32,79 @@ def cluster_articles(df_articles, max_k=MAX_K_VALUE):
     df_articles['cluster_id'] = clusters
 
     # 5. 실루엣 계수를 계산하여 각 클러스터의 평균 계수를 구함
-    silhouette_avg = silhouette_score(X, clusters)
-    print(f"Overall Silhouette Score for all clusters: {silhouette_avg}")
+    # silhouette_avg = silhouette_score(X, clusters)
+    print(f"Overall Silhouette Score for all clusters: {silhouette_avg}, Cluster Size: {len(set(clusters))}")
 
-    # 각 데이터 포인트의 실루엣 계수
-    silhouette_vals = silhouette_samples(X, clusters)
-
-    # 6. 클러스터별 평균 실루엣 계수 계산
     cluster_silhouette_scores = {}
-    for cluster_id in range(optimal_k):
-        cluster_silhouette_scores[cluster_id] = silhouette_vals[clusters == cluster_id].mean()
+    clustered_articles = {}
+    valid_clusters = []
+    if len(set(clusters)) > 2:
+        # 군집수가 2개 이상일 경우, 실루엣 값 계산
+        silhouette_vals = silhouette_samples(X, clusters)
 
-    # 7. 평균 실루엣 계수가 낮은 클러스터를 제외
-    valid_clusters = [cluster_id for cluster_id, score in cluster_silhouette_scores.items() if score > silhouette_avg]
+        # 6. 클러스터별 평균 실루엣 계수 계산
+        for cluster_id in range(optimal_k):
+            cluster_silhouette_scores[cluster_id] = silhouette_vals[clusters == cluster_id].mean()
 
-    # 8. 유효한 클러스터들만 포함
-    filtered_articles = df_articles[df_articles['cluster_id'].isin(valid_clusters)]
+        # 7. 평균 실루엣 계수가 낮은 클러스터를 제외
+        valid_clusters = [cluster_id for cluster_id, score in cluster_silhouette_scores.items() if score > silhouette_avg]
 
-    # 9. 각 클러스터에서 상위 10개 단어 출력
+        # 8. 유효한 클러스터들만 포함
+        filtered_articles = df_articles[df_articles['cluster_id'].isin(valid_clusters)]
+
+        # 9. 클러스터별로 기사들을 저장
+        for cluster_id in valid_clusters:
+            clustered_articles[cluster_id] = filtered_articles[filtered_articles['cluster_id'] == cluster_id].to_dict(orient='records')
+            print_clustered_articles(clustered_articles, cluster_silhouette_scores)
+    else:
+        df = pd.DataFrame(df_articles)
+        clustered_articles = df.groupby('cluster_id').apply(lambda x: x.to_dict(orient='records')).to_dict()
+
     print_top_words_per_cluster(vectorizer, kmeans)
 
-    # 10. 클러스터별로 기사들을 저장
-    clustered_articles = {}
-    for cluster_id in valid_clusters:
-        clustered_articles[cluster_id] = filtered_articles[filtered_articles['cluster_id'] == cluster_id].to_dict(orient='records')
-
-    print_clustered_articles(clustered_articles, cluster_silhouette_scores)
-
     return clustered_articles
+
+
+def find_optimal_clusters(X, max_k=MAX_K_VALUE):
+    """엘보우 방법과 실루엣 점수를 사용하여 최적의 클러스터 수를 찾습니다."""
+    n_samples = X.shape[0]  # 희소 행렬에서 행의 개수를 얻음
+    max_k = min(max_k, n_samples - 1)  # max_k가 n_samples보다 크지 않도록 조정
+    iters = range(2, max_k + 1)
+    sse = []
+    silhouette_scores = []
+    silhouette_avg = None
+
+    for k in iters:
+        kmeans = KMeans(n_clusters=k, random_state=42)
+        kmeans.fit(X)
+        sse.append(kmeans.inertia_)
+
+        # 실루엣 점수 계산 (클러스터가 샘플 수보다 적을 때만)
+        if k < n_samples:
+            labels = kmeans.labels_
+            silhouette_avg = silhouette_score(X, labels)
+            silhouette_scores.append(silhouette_avg)
+        else:
+            break  # 클러스터 수가 샘플 수보다 많을 때는 중지
+
+    # 엘보우 포인트를 시각화
+    # plt.plot(iters, sse, marker='o', label='SSE')
+    # plt.plot(iters, silhouette_scores, marker='x', label='Silhouette Score')
+    # plt.xlabel('Number of clusters')
+    # plt.ylabel('SSE / Silhouette Score')
+    # plt.title('Elbow Method and Silhouette Score for Optimal k')
+    # plt.legend()
+    # plt.show()
+
+    # 실루엣 점수가 가장 높은 클러스터 수 선택
+    if silhouette_scores:
+        optimal_k = iters[silhouette_scores.index(max(silhouette_scores))]
+        print(f"Optimal number of clusters based on silhouette score: {optimal_k}")
+    else:
+        optimal_k = 2  # 기본값으로 최소 2개의 클러스터 선택
+        print("No valid silhouette scores calculated. Defaulting to 2 clusters.")
+
+    return optimal_k, silhouette_avg
 
 
 def print_clustered_articles(clustered_articles, cluster_silhouette_scores):
@@ -78,40 +123,6 @@ def print_clustered_articles(clustered_articles, cluster_silhouette_scores):
             print(f"Press Level: {article['press_level']}")
             print(f"Link: {article['link']}")
             print("-" * 80)
-
-
-def find_optimal_clusters(X, max_k=MAX_K_VALUE):
-    """엘보우 방법과 실루엣 점수를 사용하여 최적의 클러스터 수를 찾습니다."""
-    n_samples = X.shape[0]  # 희소 행렬에서 행의 개수를 얻음
-    max_k = min(max_k, n_samples - 1)  # max_k가 n_samples보다 크지 않도록 조정
-    iters = range(2, max_k + 1)
-    sse = []
-    silhouette_scores = []
-
-    for k in iters:
-        kmeans = KMeans(n_clusters=k, random_state=42)
-        kmeans.fit(X)
-        sse.append(kmeans.inertia_)
-
-        # 실루엣 점수 계산
-        labels = kmeans.labels_
-        silhouette_avg = silhouette_score(X, labels)
-        silhouette_scores.append(silhouette_avg)
-
-    # 엘보우 포인트를 시각화
-    # plt.plot(iters, sse, marker='o', label='SSE')
-    # plt.plot(iters, silhouette_scores, marker='x', label='Silhouette Score')
-    # plt.xlabel('Number of clusters')
-    # plt.ylabel('SSE / Silhouette Score')
-    # plt.title('Elbow Method and Silhouette Score for Optimal k')
-    # plt.legend()
-    # plt.show()
-
-    # 실루엣 점수가 가장 높은 클러스터 수 선택
-    optimal_k = iters[silhouette_scores.index(max(silhouette_scores))]
-    print(f"Optimal number of clusters based on silhouette score: {optimal_k}")
-
-    return optimal_k
 
 def print_top_words_per_cluster(vectorizer, kmeans, n_words=10):
     """각 클러스터에서 상위 n개의 중요 단어를 출력"""

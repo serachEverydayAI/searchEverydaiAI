@@ -5,7 +5,6 @@ extract_filename = "extracted_article"
 def extract_max_press_level_article(cluster_data):
     max_press_articles = []
     cluster_counts = {}
-
     for cluster, articles in cluster_data.items():
         cluster_counts[cluster] = len(articles)
         # 각 군집의 기사 중 'press_level'이 가장 높은 기사 선택
