@@ -2,8 +2,10 @@ import requests, random, time
 from bs4 import BeautifulSoup
 from datetime import datetime
 import pandas as pd
+from searchEveryday.searchEveryday.common.definition import MAIN_PRESS
 
-def crawl_articles(keyword: str) -> list:
+
+def crawl_articles(keyword: str, filename: str)  -> pd.DataFrame:
     max_page = 50
     sort = 0  # 관련도순
     photo = 0  # 사진 포함 안함
@@ -20,9 +22,9 @@ def crawl_articles(keyword: str) -> list:
             response = requests.get(url, headers=headers)
             soup = BeautifulSoup(response.text, 'html.parser')
 
+            time.sleep(random.random() + 1)
             if response.status_code != 200:
                 raise Exception(f"Failed to load page {url}")
-            time.sleep(random.random() + 1)
             news = soup.find_all('div', class_='news_wrap api_ani_send')
             if not news:
                 break
@@ -30,8 +32,9 @@ def crawl_articles(keyword: str) -> list:
             for cnt, item in enumerate(news, start=1):
                 title = item.find('a', class_='news_tit').get_text()
                 link = item.find('a', class_='news_tit')['href']
-                source = item.find('a', class_='info press').get_text()
+                press = item.find('a', class_='info press').get_text()
                 current_time = datetime.now()  # 크롤링 시간
+                level = MAIN_PRESS.get(press, '0')
 
                 # 중복된 링크인지 확인
                 if link not in unique_links:
@@ -39,7 +42,8 @@ def crawl_articles(keyword: str) -> list:
                         'title': title,
                         'content': 'content',
                         'link': link,
-                        'source': source,
+                        'press': press,
+                        'press_level': level,
                         'crawling_time': current_time
                     })
                     unique_links.add(link)  # 중복 방지를 위해 추가
@@ -50,4 +54,7 @@ def crawl_articles(keyword: str) -> list:
             print(e)
 
     df = pd.DataFrame(all_articles)
+
+    # 엑셀 파일로 저장
+    df.to_excel(f"{filename}", index=False)
     return df
