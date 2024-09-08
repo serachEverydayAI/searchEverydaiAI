@@ -14,30 +14,38 @@ MIN_CLUSTER_SIZE = 3  # 최소 클러스터 크기 제한
 
 
 def cluster_articles(df_articles, max_k=MAX_K_VALUE):
-    # 1. 기사 제목을 추출
-    titles = df_articles['title'].tolist()
 
-    vectorizer = TfidfVectorizer(stop_words=korean_stop_words)
-    X = vectorizer.fit_transform(titles)
+    clusters, valid_clusters = [], []
+    cluster_silhouette_scores, clustered_articles = {}, {}
+    optimal_k = silhouette_avg = None
 
-    # 2. 최적의 Cluster 수 찾기
-    optimal_k, silhouette_avg = find_optimal_clusters(X, max_k=max_k)
+    if len(df_articles) > 1:
+        # 1. 기사 제목을 추출
+        titles = df_articles['title'].tolist()
 
-    # 3. KMeans 사용해 군집화
-    kmeans = KMeans(n_clusters=optimal_k, random_state=42)
-    kmeans.fit(X)
+        vectorizer = TfidfVectorizer(stop_words=korean_stop_words)
+        X = vectorizer.fit_transform(titles)
 
-    # 4. 각 기사의 Cluster 할당
-    clusters = kmeans.predict(X)
+        # 2. 최적의 Cluster 수 찾기
+        optimal_k, silhouette_avg = find_optimal_clusters(X, max_k=max_k)
+
+        # 3. KMeans 사용해 군집화
+        kmeans = KMeans(n_clusters=optimal_k, random_state=42)
+        kmeans.fit(X)
+
+        # 4. 각 기사의 Cluster 할당
+        clusters = kmeans.predict(X)
+        print_top_words_per_cluster(vectorizer, kmeans)
+
+        # 5. 실루엣 계수를 계산하여 각 클러스터의 평균 계수를 구함
+        print(f"Overall Silhouette Score for all clusters: {silhouette_avg}, Cluster Size: {len(set(clusters))}")
+
+    else:
+        print(f"Keyword article is one. Nothing to cluseter.")
+        clusters.append(0)
+
     df_articles['cluster_id'] = clusters
 
-    # 5. 실루엣 계수를 계산하여 각 클러스터의 평균 계수를 구함
-    # silhouette_avg = silhouette_score(X, clusters)
-    print(f"Overall Silhouette Score for all clusters: {silhouette_avg}, Cluster Size: {len(set(clusters))}")
-
-    cluster_silhouette_scores = {}
-    clustered_articles = {}
-    valid_clusters = []
     if len(set(clusters)) > 2:
         # 군집수가 2개 이상일 경우, 실루엣 값 계산
         silhouette_vals = silhouette_samples(X, clusters)
@@ -60,8 +68,6 @@ def cluster_articles(df_articles, max_k=MAX_K_VALUE):
         df = pd.DataFrame(df_articles)
         clustered_articles = df.groupby('cluster_id').apply(lambda x: x.to_dict(orient='records')).to_dict()
 
-    print_top_words_per_cluster(vectorizer, kmeans)
-
     return clustered_articles
 
 
@@ -70,8 +76,7 @@ def find_optimal_clusters(X, max_k=MAX_K_VALUE):
     n_samples = X.shape[0]  # 희소 행렬에서 행의 개수를 얻음
     max_k = min(max_k, n_samples - 1)  # max_k가 n_samples보다 크지 않도록 조정
     iters = range(2, max_k + 1)
-    sse = []
-    silhouette_scores = []
+    sse, silhouette_scores = [], []
     silhouette_avg = None
 
     for k in iters:

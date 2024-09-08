@@ -1,6 +1,7 @@
 import pandas as pd
+import os
+from searchEveryday.searchEveryday.config import EXCEL_FOLDER, RESULT_ARTICLE
 
-extract_filename = "extracted_article"
 
 def extract_max_press_level_article(cluster_data):
     max_press_articles = []
@@ -14,6 +15,6 @@ def extract_max_press_level_article(cluster_data):
     df = pd.DataFrame(max_press_articles)
     df['count'] = df['cluster_id'].map(cluster_counts)
     df_sorted = df.sort_values(by=['count', 'press_level'], ascending=[False, False])
-    df_sorted.to_excel(f"{extract_filename}.xlsx", index=False)
+    df_sorted.to_excel(os.path.join(EXCEL_FOLDER, f"{RESULT_ARTICLE}.xlsx"), index=False)
 
     return df_sorted

@@ -2,7 +2,9 @@ import requests, random, time
 from bs4 import BeautifulSoup
 from datetime import datetime
 import pandas as pd
+import os
 from searchEveryday.searchEveryday.common.definition import MAIN_PRESS
+from searchEveryday.searchEveryday.config import EXCEL_FOLDER
 
 
 def crawl_articles(keyword: str, filename: str)  -> pd.DataFrame:
@@ -47,7 +49,7 @@ def crawl_articles(keyword: str, filename: str)  -> pd.DataFrame:
                         'crawling_time': current_time
                     })
                     unique_links.add(link)  # 중복 방지를 위해 추가
-                    print(f'{(page)}{cnt-1} {articles[-1]}')
+                    print(f'{page}{cnt - 1} {articles[-1]}')
             all_articles.extend(articles)
 
         except Exception as e:
@@ -55,6 +57,5 @@ def crawl_articles(keyword: str, filename: str)  -> pd.DataFrame:
 
     df = pd.DataFrame(all_articles)
 
-    # 엑셀 파일로 저장
-    df.to_excel(f"{filename}", index=False)
+    df.to_excel(os.path.join(EXCEL_FOLDER, f"{filename}"), index=False)
     return df
