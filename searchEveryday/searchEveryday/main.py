@@ -24,23 +24,23 @@ def main():
         excel_file = f"{CRAWLED_DATA}_{word}_{today_date}.xlsx"
         file_path = os.path.join(EXCEL_FOLDER, excel_file)
 
-    if os.path.exists(file_path):
-        print(f"{excel_file} 파일이 존재하므로 엑셀 파일에서 데이터를 불러옵니다.")
-        df_articles = pd.read_excel(file_path)
-    else:
-        print(f"{excel_file} 파일이 없으므로 기사를 크롤링하여 데이터를 저장합니다.")
-        df_articles = crawl_articles(search_word, excel_file)
+        if os.path.exists(file_path):
+            print(f"{excel_file} 파일이 존재하므로 엑셀 파일에서 데이터를 불러옵니다.")
+            df_articles = pd.read_excel(file_path)
+        else:
+            print(f"{excel_file} 파일이 없으므로 기사를 크롤링하여 데이터를 저장합니다.")
+            df_articles = crawl_articles(search_word, excel_file)
 
-    if df_articles.empty:
-        print(f"{today_date} {words} keyword articles not found. Exiting program.")
-        return 1
+        if df_articles.empty:
+            print(f"{today_date} {words} keyword articles not found. Exiting program.")
+            return 1
 
-    all_articles.append(df_articles)
+        all_articles.append(df_articles)
 
-    # 3. 기사 군집화
-    clustered_articles = cluster_articles(df_articles)
-    # 4. 군집된 기사 정리 및 정렬
-    extracted_articles = extract_max_press_level_article(clustered_articles)
+        # 3. 기사 군집화
+        clustered_articles = cluster_articles(df_articles)
+        # 4. 군집된 기사 정리 및 정렬
+        extracted_articles = extract_max_press_level_article(clustered_articles)
 
 
 if __name__ == "__main__":
