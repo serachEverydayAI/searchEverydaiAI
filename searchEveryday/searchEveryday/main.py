@@ -3,9 +3,15 @@ from search.article_crawler import crawl_articles  # 네이버 기사 검색
 from search.article_clustering import cluster_articles  # 검색한 기사 분류
 import pandas as pd
 import os
-from searchEveryday.searchEveryday.config import TEXT_FILE, CRAWLED_DATA, EXCEL_FOLDER
+from searchEveryday.searchEveryday.config import TEXT_FILE, CRAWLED_DATA, EXCEL_FOLDER, \
+    DatabaseConnection, DB_PATH
 from searchEveryday.searchEveryday.search.article_selection import extract_max_press_level_article
 from datetime import datetime
+
+from searchEveryday.searchEveryday.sql.ddl import create_article_crawled_data_his, create_article_result_his, \
+    create_article_crawled_data_mas
+from searchEveryday.searchEveryday.sql.select import getCrawledDataMas_WithAnchorDate_Keyword, \
+    getCrawledDataHis_WithAnchorDate_Keyword
 
 
 def main():
@@ -13,34 +19,51 @@ def main():
     print(f'등록된 단어: {words}')
 
     all_articles = []
-    excel_file = ''
     search_word = ''
     file_path = ''
     today_date = datetime.today().strftime('%Y%m%d')
 
-    for index, word in enumerate(words, start=1):
-        print(f"{index}: {word}")
-        search_word = word
-        excel_file = f"{CRAWLED_DATA}_{word}_{today_date}.xlsx"
-        file_path = os.path.join(EXCEL_FOLDER, excel_file)
+    with DatabaseConnection(DB_PATH) as conn:
 
-        if os.path.exists(file_path):
-            print(f"{excel_file} 파일이 존재하므로 엑셀 파일에서 데이터를 불러옵니다.")
-            df_articles = pd.read_excel(file_path)
-        else:
-            print(f"{excel_file} 파일이 없으므로 기사를 크롤링하여 데이터를 저장합니다.")
-            df_articles = crawl_articles(search_word, excel_file)
+        """
+        신규 테이블 생성 
+        """
+        create_article_crawled_data_his(conn)
+        create_article_crawled_data_mas(conn)
+        create_article_result_his(conn)
 
-        if df_articles.empty:
-            print(f"{today_date} {words} keyword articles not found. Exiting program.")
-            return 1
+        for index, word in enumerate(words, start=1):
+            print(f"{index}: {word}")
+            search_word = word
+            # df_articles = read_artiFcles_from_db(search_word, conn)
 
-        all_articles.append(df_articles)
+            filename = f"{CRAWLED_DATA}_{word}_{today_date}"
+            file_path = os.path.join(EXCEL_FOLDER, filename)
 
-        # 3. 기사 군집화
-        clustered_articles = cluster_articles(df_articles)
-        # 4. 군집된 기사 정리 및 정렬
-        extracted_articles = extract_max_press_level_article(clustered_articles)
+            # 함수 호출
+            df_articles = getCrawledDataMas_WithAnchorDate_Keyword(today_date, word, conn)
+
+            # 결과가 비어 있는지 확인
+            if not df_articles.empty:
+                print(f"{today_date}: 저장된 {filename} 키워드가 있습니다. 기존 데이터를 불러옵니다.")
+                #df_his_articles = pd.read_excel(file_path)
+                df_his_articles = getCrawledDataHis_WithAnchorDate_Keyword(today_date, word, conn)
+            else:
+                print(f"{today_date}: 저장된 {filename} 키워드가 없습니다. 새로운 기사를 크롤링하여 데이터를 저장합니다.")
+                #print(df_articles.iloc[0])  # 첫 번째 행(기사)을 출력
+
+                df_his_articles = crawl_articles(search_word, filename, today_date, conn)
+
+            if df_his_articles.empty:
+                print(f"{today_date} {words} keyword articles not found. Exiting program.")
+                continue
+
+            all_articles.append(df_his_articles)
+
+            # 3. 기사 군집화
+            clustered_articles = cluster_articles(df_his_articles)
+            # 4. 군집된 기사 정리 및 정렬
+            extracted_articles = extract_max_press_level_article(clustered_articles)
 
 
 if __name__ == "__main__":

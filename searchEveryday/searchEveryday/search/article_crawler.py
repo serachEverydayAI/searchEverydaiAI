@@ -5,9 +5,11 @@ import pandas as pd
 import os
 from searchEveryday.searchEveryday.common.definition import MAIN_PRESS
 from searchEveryday.searchEveryday.config import EXCEL_FOLDER
+from searchEveryday.searchEveryday.sql.insert import insertCrawledDataMas_WithAnchorDate_Keyword, \
+    insertCrawledDataHis_WithDf_Keyword
 
 
-def crawl_articles(keyword: str, filename: str)  -> pd.DataFrame:
+def crawl_articles(keyword: str, filename: str, today: str, conn)  -> pd.DataFrame:
     max_page = 50
     sort = 0  # 관련도순
     photo = 0  # 사진 포함 안함
@@ -56,6 +58,9 @@ def crawl_articles(keyword: str, filename: str)  -> pd.DataFrame:
             print(e)
 
     df = pd.DataFrame(all_articles)
+    if not df.empty:
+        insertCrawledDataHis_WithDf_Keyword(df, keyword, conn)
+    insertCrawledDataMas_WithAnchorDate_Keyword(len(df), keyword, today, conn)
 
-    df.to_excel(os.path.join(EXCEL_FOLDER, f"{filename}"), index=False)
+    #df.to_excel(os.path.join(EXCEL_FOLDER, f"{filename}"), index=False)
     return df

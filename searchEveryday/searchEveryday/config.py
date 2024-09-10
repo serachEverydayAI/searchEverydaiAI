@@ -13,10 +13,14 @@ RESULT_ARTICLE = "result_article"
 
 DB_PATH = 'db.sqlite3'
 
-
 class DatabaseConnection:
-    def __init__(self, db_path):
-        self.db_path = db_path
+    def __init__(self, db_name):
+        # 현재 스크립트의 디렉토리 경로를 가져옵니다.
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        # 상위 폴더 경로를 가져옵니다.
+        parent_dir = os.path.dirname(current_dir)
+        # 상위 폴더에 데이터베이스 파일 경로를 설정합니다.
+        self.db_path = os.path.join(parent_dir, db_name)
         self.conn = None
 
     def __enter__(self):
@@ -30,43 +34,3 @@ class DatabaseConnection:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.conn:
             self.conn.close()
-
-def create_articles_table(conn):
-    try:
-        cursor = conn.cursor()
-        cursor.execute('''
-                CREATE TABLE IF NOT EXISTS articles (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    title TEXT NOT NULL,
-                    content TEXT,
-                    link TEXT,
-                    press TEXT,
-                    press_level TEXT,
-                    crawling_time TEXT
-                )
-                ''')
-        conn.commit()
-    except sqlite3.Error as e:
-        print(f"Error creating table: {e}")
-        conn.rollback()
-
-def save_articles_to_db(df_articles, search_word, conn):
-    try:
-        cursor = conn.cursor()
-        for _, row in df_articles.iterrows():
-            cursor.execute('''
-            INSERT INTO articles (search_word, article_title, article_content) VALUES (?, ?, ?)
-            ''', (search_word, row['title'], row['content']))
-        conn.commit()
-    except sqlite3.Error as e:
-        print(f"Error saving articles: {e}")
-        conn.rollback()
-
-def read_articles_from_db(search_word, conn):
-    try:
-        query = "SELECT * FROM articles WHERE search_word = ?"
-        df_articles = pd.read_sql_query(query, conn, params=(search_word,))
-        return df_articles
-    except sqlite3.Error as e:
-        print(f"Error reading articles: {e}")
-        return pd.DataFrame()  # Return empty DataFrame in case of error
