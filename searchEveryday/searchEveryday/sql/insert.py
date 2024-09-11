@@ -47,8 +47,33 @@ def insertCrawledDataHis_WithDf_Keyword(df, keyword, conn):
             row['link'],
             row['press'],
             row['press_level'],
-            row['crawling_time'].strftime('%Y%m%d%H%M%S%f')[:-3]  # crawling_time 포맷 yyyyMMddHHmmssSSS
+            row['crawling_time']
         )
         execute_query(conn, query, params)
     conn.commit()  # 트랜잭션 커밋
     print(f"Successfully inserted SIZE: {len(df)} [article_crawled_data_his]")
+
+def insertResultHis_WithDf_Keyword(df, keyword, conn):
+    nowDate = datetime.now().strftime('%Y%m%d')
+    for index, row in df.iterrows():
+        query = '''
+              INSERT INTO article_result_his (reg_date, keyword, 
+             title, content, link, press, press_level, crawling_time, cluster_id, article_cnt)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         '''
+        params = (
+            nowDate,
+            keyword,
+            row['title'],
+            row['content'],
+            row['link'],
+            row['press'],
+            row['press_level'],
+            row['crawling_time'],
+            row['cluster_id'],
+            row['count']
+        )
+        execute_query(conn, query, params)
+    conn.commit()  # 트랜잭션 커밋
+    print(f"Successfully inserted [article_result_his]")
+

@@ -37,7 +37,7 @@ def crawl_articles(keyword: str, filename: str, today: str, conn)  -> pd.DataFra
                 title = item.find('a', class_='news_tit').get_text()
                 link = item.find('a', class_='news_tit')['href']
                 press = item.find('a', class_='info press').get_text()
-                current_time = datetime.now()  # 크롤링 시간
+                current_time = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-3]
                 level = MAIN_PRESS.get(press, '0')
 
                 # 중복된 링크인지 확인

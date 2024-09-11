@@ -16,11 +16,8 @@ from searchEveryday.searchEveryday.sql.select import getCrawledDataMas_WithAncho
 
 def main():
     words = read_words(os.path.join(EXCEL_FOLDER, f"{TEXT_FILE}.txt"))
-    print(f'등록된 단어: {words}')
+    print(f'등록된 단어 목록: {words}')
 
-    all_articles = []
-    search_word = ''
-    file_path = ''
     today_date = datetime.today().strftime('%Y%m%d')
 
     with DatabaseConnection(DB_PATH) as conn:
@@ -35,7 +32,6 @@ def main():
         for index, word in enumerate(words, start=1):
             print(f"{index}: {word}")
             search_word = word
-            # df_articles = read_artiFcles_from_db(search_word, conn)
 
             filename = f"{CRAWLED_DATA}_{word}_{today_date}"
             file_path = os.path.join(EXCEL_FOLDER, filename)
@@ -55,15 +51,13 @@ def main():
                 df_his_articles = crawl_articles(search_word, filename, today_date, conn)
 
             if df_his_articles.empty:
-                print(f"{today_date} {words} keyword articles not found. Exiting program.")
+                print(f"{today_date} {word} keyword articles not found. Exiting program.")
                 continue
-
-            all_articles.append(df_his_articles)
 
             # 3. 기사 군집화
             clustered_articles = cluster_articles(df_his_articles)
             # 4. 군집된 기사 정리 및 정렬
-            extracted_articles = extract_max_press_level_article(clustered_articles)
+            extracted_articles = extract_max_press_level_article(clustered_articles, word, conn)
 
 
 if __name__ == "__main__":
