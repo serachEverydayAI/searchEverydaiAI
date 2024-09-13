@@ -1,6 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
 
 def index(request):
-    return render(request,'web/index.html')
-
+    _context = {'check':False}
+    if request.session.get('access_token'):
+        _context['check'] = True
+    return render(request,'web/index.html', _context)

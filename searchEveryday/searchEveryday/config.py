@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 from datetime import datetime
 
-API_KEY = 'your-chatgpt-api-key'
+CHATGPT_API_KEY = 'your-chatgpt-api-key'
 NUM_CLUSTERS = 5
 
 TEXT_FILE = "keyword"

@@ -2,9 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kakao Login</title>
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <style>
+        #kakao-login-img {
+            width: 200px; /* 이미지의 너비를 설정 */
+            cursor: pointer; /* 클릭 시 커서 모양 변경 */
+        }
+    </style>
+    <script>
+        var ws = new WebSocket('ws://127.0.0.1:8000');
+        ws.onopen = (event) => {
+          let sendData = { event: 'open' }
+          ws.send(JSON.stringify(sendData));
+        }
+        ws.onmessage = (event) => {
+          let recData = JSON.parse(event.data);
+          switch (recData.event) {
+            case 'response':
+              console.log(recData.data);
+              break;
+          }
+        }
+
+        function myOnClick() {
+          let sendData = {
+            event: 'request',
+            data: 'some data...'
+          };
+          ws.send(JSON.stringify(sendData));
+        }
+    </script>
 </head>
 <body>
-    장고 첫페이지!
+    <script>
+        // Kakao 로그인 이미지 클릭 이벤트
+        document.getElementById('kakao-login-img').onclick = function() {
+            Kakao.Auth.login({
+                success: function(authObj) {
+                    // 로그인 성공 시 액세스 토큰을 서버로 전송
+                    fetch('http://localhost:8000/api/kakao-login/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ access_token: authObj.access_token }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                },
+                fail: function(err) {
+                    console.error('Login failed:', err);
+                }
+            });
+        };
+
+    </script>
+        {% if check %}
+            <div>
+                <h1>카카오 로그아웃</h1>
+                <form action="/kakaoLogout" method="GET">
+                    <input type="submit" value="카카오로그아웃 및 연결 끊기" />
+                </form>
+            </div>
+        {% else %}
+
+            <div>
+                <h1>카카오톡으로 로그인하기</h1>
+                <form action="/kakaoLoginLogic" method="GET">
+                    <input type="image" src="../../static/image/kakao_login_medium_wide.png" alt="Login with Kakao"/>
+                </form>
+            </div>
+        {% endif %}
 </body>
 </html>
