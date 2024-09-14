@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% include '../common/html/head.html' %}
+    <title>Kakao Login</title>
+</head>
+<body class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    {% if check %}
+    <div class="container text-center">
+        <h1 class="mb-3">카카오톡 로그아웃</h1>
+        <form action="/kakaoLogout" method="GET">
+            <input type="submit" value="카카오톡 로그아웃"/>
+        </form>
+    </div>
+    {% else %}
+    <div class="container text-center">
+        <h2 class="mb-3">카카오톡으로 로그인하기</h2>
+        <form action="/kakaoLoginLogic" method="GET">
+            <input type="image" src="{% static 'searchEveryday/image/kakao_login_medium_wide.png' %}" alt="Login with Kakao"/>
+        </form>
+    </div>
+    {% endif %}
+
+<script src="{% static 'searchEveryday/js/common_body.js' %}"></script>
+</body>
+</html>
