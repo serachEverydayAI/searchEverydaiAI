@@ -18,8 +18,8 @@ kakao_token_uri = "https://kauth.kakao.com/oauth/token"
 kakao_profile_uri = "https://kapi.kakao.com/v2/user/me"
 
 URI = {
-    "LOGIN" : 'web/index.html',
-    "HOME" : 'web/home.html',
+    "LOGIN" : 'searchEveryday/index.html',
+    "HOME" : 'searchEveryday/home.html',
 }
 
 def index(request):
