@@ -5,12 +5,12 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('web/', include('web.urls')),
-    path('api/', include('web.urls')),
 
-    path('', views.index, name='kakao'),
+    path('', views.index),
     path('kakaoLoginLogic/', views.kakaoLoginLogic),
     path('kakaoLoginLogicRedirect/', views.kakaoLoginLogicRedirect),
     path('kakaoLogout/', views.kakaoLogout),
+    path('kakaoLogoutWithAcccount/', views.kakaoLogoutWithAcccount),
 ]
 
 

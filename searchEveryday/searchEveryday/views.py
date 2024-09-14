@@ -17,12 +17,17 @@ kakao_login_uri = "https://kauth.kakao.com/oauth/authorize"
 kakao_token_uri = "https://kauth.kakao.com/oauth/token"
 kakao_profile_uri = "https://kapi.kakao.com/v2/user/me"
 
+URI = {
+    "LOGIN" : 'web/index.html',
+    "HOME" : 'web/home.html',
+}
 
 def index(request):
     _context = {'check':False}
+    print(f'Request : {request.session.get('access_token')}')
     if request.session.get('access_token'):
         _context['check'] = True
-    return render(request,'web/index.html', _context)
+    return render(request,URI['LOGIN'], _context)
 
 def kakaoLoginLogic(request):
     _redirectUrl = 'http://127.0.0.1:8000/kakaoLoginLogicRedirect'
@@ -37,7 +42,7 @@ def kakaoLoginLogicRedirect(request):
     _result = _res.json()
     request.session['access_token'] = _result['access_token']
     request.session.modified = True
-    return render(request, 'loginSuccess.html')
+    return render(request, URI['HOME'])
 
 def kakaoLogout(request):
     _token = request.session['access_token']
@@ -45,16 +50,19 @@ def kakaoLogout(request):
     _header = {
       'Authorization': f'bearer {_token}'
     }
-    # _url = 'https://kapi.kakao.com/v1/user/unlink'
-    # _header = {
-    #   'Authorization': f'bearer {_token}',
-    # }
     _res = requests.post(_url, headers=_header)
     _result = _res.json()
     if _result.get('id'):
-        del request.session['access_token']
-        print(f"Success Logout")
-        return render(request, 'home.html')
+        print(f"Success Logout: {_result}")
     else:
-        print(f"Errro Logout")
-        return render(request, 'home.html')
+        print(f"Error Logout")
+    del request.session['access_token']
+    return render(request, URI['LOGIN'])
+
+def kakaoLogoutWithAcccount(request):
+    _redirect_uri = 'http://127.0.0.1:8000'
+    _url = f"https://kauth.kakao.com/oauth/logout?client_id={KAKAO_CONFIG['KAKAO_REST_API_KEY']}&logout_redirect_uri={_redirect_uri}"
+    _res = requests.post(_url)
+    # _result = _res.json()
+    # print(f'kakaoLogoutWithAcccount: {_result}')
+    return redirect(_url)

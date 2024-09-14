@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    {% load static %}
+    <script src="{% static 'static/js/common_head' %}"></script>
+    <!-- <script src="static/js/common_head.js" defer></script> -->
 </head>
-<body>
-    Home Log In page
+
+<body class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="container text-center">
+        <h1 class="mb-4">Home Page</h1>
+        <form action="/kakaoLogout" method="GET" class="mb-3">
+            <button type="submit" class="btn btn-primary btn-lg">카카오톡 로그아웃</button>
+        </form>
+        <form action="/kakaoLogoutWithAcccount" method="GET">
+            <button type="submit" class="btn btn-secondary btn-lg">카카오톡 연결끊기</button>
+        </form>
+    </div>
+
+    <script src="{% static 'static/js/common_body.js' %}"></script>
+    <!-- <script src="static/js/common_body.js"></script> -->
 </body>
 </html>
