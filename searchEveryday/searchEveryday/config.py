@@ -13,6 +13,19 @@ RESULT_ARTICLE = "result_article"
 
 DB_PATH = 'db.sqlite3'
 
+KAKAO_CONFIG = {
+    "KAKAO_REST_API_KEY": "393ca1ee74d48f3859abc66c9f40b86a",
+    "KAKAO_REDIRECT_URI": "http://localhost:8000/oauth/kakao/login/callback/",
+    "KAKAO_CLIENT_SECRET_KEY": "0AYrHw7x9XtIXARQAN4olB8mPJqrL6wm",
+}
+
+URI = {
+    "DEFAULT": "http://127.0.0.1:8000",
+    "LOGIN" : 'searchEveryday/main/index.html',
+    "HOME" : 'searchEveryday/main/home.html',
+}
+
+
 class DatabaseConnection:
     def __init__(self, db_name):
         # 현재 스크립트의 디렉토리 경로를 가져옵니다.

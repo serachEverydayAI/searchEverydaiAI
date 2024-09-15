@@ -9,25 +9,17 @@ from searchEveryday.searchEveryday.search.article_selection import extract_max_p
 from datetime import datetime
 
 from searchEveryday.searchEveryday.sql.ddl import create_article_crawled_data_his, create_article_result_his, \
-    create_article_crawled_data_mas
+    create_article_crawled_data_mas, create_se_cust_info, create_se_cust_keyword
 from searchEveryday.searchEveryday.sql.select import getCrawledDataMas_WithAnchorDate_Keyword, \
     getCrawledDataHis_WithAnchorDate_Keyword
 
 
-def main():
+def article_main():
     words = read_words(os.path.join(EXCEL_FOLDER, f"{TEXT_FILE}.txt"))
     print(f'등록된 단어 목록: {words}')
-
     today_date = datetime.today().strftime('%Y%m%d')
 
     with DatabaseConnection(DB_PATH) as conn:
-
-        """
-        신규 테이블 생성 
-        """
-        create_article_crawled_data_his(conn)
-        create_article_crawled_data_mas(conn)
-        create_article_result_his(conn)
 
         for index, word in enumerate(words, start=1):
             print(f"{index}: {word}")
@@ -59,6 +51,16 @@ def main():
             # 4. 군집된 기사 정리 및 정렬
             extracted_articles = extract_max_press_level_article(clustered_articles, word, conn)
 
+def server_init():
+    """ 신규 테이블 생성  """
+    with DatabaseConnection(DB_PATH) as conn:
+        create_article_crawled_data_his(conn)
+        create_article_crawled_data_mas(conn)
+        create_article_result_his(conn)
+        create_se_cust_info(conn)
+        create_se_cust_keyword(conn)
+
 
 if __name__ == "__main__":
-    main()
+    #article_main()
+    server_init()

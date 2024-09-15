@@ -1,42 +1,10 @@
-from django.shortcuts import render, redirect
 import requests
 import jwt, json
-from django.shortcuts import render
+from ..config import URI, KAKAO_CONFIG, DB_PATH, DatabaseConnection
+from django.shortcuts import render, redirect
+from ..sql.insert import insertSeCustInfo
+from ..sql.select import getSeCustInfo_WithCi
 
-
-KAKAO_CONFIG = {
-    "KAKAO_REST_API_KEY": "393ca1ee74d48f3859abc66c9f40b86a",
-    "KAKAO_REDIRECT_URI": "http://localhost:8000/oauth/kakao/login/callback/",
-    "KAKAO_CLIENT_SECRET_KEY": "0AYrHw7x9XtIXARQAN4olB8mPJqrL6wm",
-}
-
-kakao_login_uri = "https://kauth.kakao.com/oauth/authorize"
-kakao_token_uri = "https://kauth.kakao.com/oauth/token"
-kakao_profile_uri = "https://kapi.kakao.com/v2/user/me"
-
-URI = {
-    "DEFAULT": "http://127.0.0.1:8000",
-    "LOGIN" : 'searchEveryday/main/index.html',
-    "HOME" : 'searchEveryday/main/home.html',
-}
-
-def index(request):
-    _context = {'check':False}
-    print(f'Request : {request.session.get('access_token')}')
-    if request.session.get('access_token'):
-        _context['check'] = True
-    return render(request,URI['LOGIN'], _context)
-
-def home(request):
-    _context = {'check':False}
-    print(f'Request : {request.session.get('access_token')}')
-    if request.session.get('access_token'):
-        _context['check'] = True
-        nickname = request.session.get('nickname', 'No nickname')
-        picture = request.session.get('picture', 'No picture')
-        return render(request, URI['HOME'],{'nickname': nickname,'picture':picture})
-    else:
-        return redirect(URI['DEFAULT'])
 
 def kakaoLoginLogic(request):
     _redirectUrl = URI['DEFAULT'] + '/kakaoLoginLogicRedirect'
@@ -71,10 +39,15 @@ def kakaoLoginLogicRedirect(request):
     # decoded_id_token_str = json.dumps(decoded_id_token, indent=4) if isinstance(decoded_id_token,dict) else decoded_id_token
     # request.session['decoded_id_token'] = decoded_id_token_str
 
-    nickname = decoded_id_token.get('nickname', 'No nickname') if isinstance(decoded_id_token, dict) else 'No nickname'
-    picture = decoded_id_token.get('picture', 'No picture') if isinstance(decoded_id_token, dict) else 'No picture'
-    request.session['nickname'] = nickname
-    request.session['picture'] = picture
+    if decoded_id_token:
+        default_values = {}
+        extracted_values = extract_values(decoded_id_token, default_values)
+        addCustIfFirst(extracted_values)
+        nickname = extracted_values['nickname']
+        picture = extracted_values['picture']
+
+        request.session['nickname'] = nickname
+        request.session['picture'] = picture
     request.session.modified = True
 
     return redirect(URI['DEFAULT'] + '/home')
@@ -100,3 +73,37 @@ def kakaoLogoutWithAcccount(request):
     _res = requests.post(_url)
     del request.session['access_token']
     return redirect(_url)
+
+
+def addCustIfFirst(data):
+    user_ci = '' if data.get('cust_ci') == '' else data.get('aud')
+    sign_up_way = 'KAKAO'
+
+    with DatabaseConnection(DB_PATH) as conn:
+        df_SeCustInfo = getSeCustInfo_WithCi(
+            user_ci, conn
+        )
+        print(f"[DEBUG] Add_Customer: {data}, SIZE: {len(df_SeCustInfo)}, user_ci: {user_ci}")
+        if len(df_SeCustInfo) == 0:
+            insertSeCustInfo(
+                conn, data.get('cust_nm'), data.get('cust_birth'), data.get('cust_telco'), data.get('cust_hp'),
+                data.get('cust_email'), data.get('cust_gender'),data.get('cust_ssn'),user_ci,
+                data.get('nickname'), data.get('picture'), data.get('cust_level'), sign_up_way
+            )
+        elif len(df_SeCustInfo) > 1:
+            print('Error: Duplication Customer', df_SeCustInfo)
+
+
+def extract_values(decoded_id_token, default_values=None):
+    if not isinstance(decoded_id_token, dict):
+        if default_values is None:
+            return {}
+        return {key: default for key, default in default_values.items()}
+    if default_values is None:
+        default_values = {}
+
+    extracted_values = {}
+    for key in decoded_id_token.keys():
+        extracted_values[key] = decoded_id_token.get(key, default_values.get(key, None))
+
+    return extracted_values
