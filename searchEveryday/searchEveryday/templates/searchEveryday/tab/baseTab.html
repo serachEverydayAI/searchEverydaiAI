@@ -1,16 +1,41 @@
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-</head>
-<body>
-    <div class="root-size background-color font-main-color">
-        {% block tab_content %}
-            <!-- 콘텐츠가 여기에 들어갑니다. -->
-        {% endblock %}
+{% extends '../main/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="baseTab font-main-color background-color">
+        <div id="tabContent" class="parent-size">
+            <!-- Dynamic Contents -->
+        </div>
     </div>
-    <link rel="stylesheet" href="{% static 'css/color.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</body>
-</html>
+    {% include '../common/mobileTabNavi.html' %}
+    <script>
+        $(document).ready(function() {
+            const $tabContent = $('#tabContent');
 
+            function loadContent(url) {
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        $tabContent.html(response).addClass('active');
+                    },
+                    error: function() {
+                        $tabContent.html('<p>컨텐츠를 로드하는 중 오류가 발생했습니다.</p>').addClass('active');
+                    }
+                });
+            }
+
+            $('.mobile-bottom-nav__item').on('click', function() {
+                const url = $(this).data('url');
+                $('.mobile-bottom-nav__item').removeClass('active');
+                $(this).addClass('active');
+                loadContent(url);
+            });
+
+            // 기본적으로 첫 번째 탭의 콘텐츠를 로드
+            if ($('.mobile-bottom-nav__item').length > 0) {
+                const initialUrl = $('.mobile-bottom-nav__item').first().data('url');
+                loadContent(initialUrl);
+            }
+        });
+    </script>
+{% endblock%}

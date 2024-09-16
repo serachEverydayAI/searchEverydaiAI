@@ -21,3 +21,12 @@ def home(request):
 
 def tab(request):
     return render(request,URI['TAB'])
+
+def home_tab(request):
+    return render(request, URI['HOMETAB'])
+
+def statistic_tab(request):
+    return render(request, URI['STATISTICTAB'])
+
+def myInfo_tab(request):
+    return render(request, URI['MYINFOTAB'])

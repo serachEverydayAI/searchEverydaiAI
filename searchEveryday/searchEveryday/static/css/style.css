@@ -1,8 +1,9 @@
-
 :root {
     --min-width: 0px;
     --max-width: 768px;
     --min-height: 0px;
+
+    --bottom-tab-height: 60px;
 }
 
 .root-size {
@@ -12,6 +13,9 @@
     margin: 0 auto; /* 중앙 정렬 */
     height: 100vh;
     position: relative;
+}
+.parent-size {
+    height: 100%;
 }
 
 .full-height {
@@ -29,6 +33,18 @@
     transform: translateX(-50%);
     width: 100%;
 }
+.xCenter {
+    align-items: center;
+    justify-content: center;
+    height: 100%
+}
+.flex_column {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
 
 /* FONT */
 @font-face {
@@ -41,6 +57,16 @@
 .login-font {
     font-family: 'Batang', serif;
 }
+.font-align-center {
+    text-align: center;
+}
+.font-align-left {
+    text-align: left;
+}
+.font-align-right {
+    text-align: right;
+}
+
 
 /* MOBILE TAB NAVIGATION  */
 .mobile-bottom-nav {
@@ -52,7 +78,7 @@
   will-change: transform;
   transform: translateZ(0);
   display: flex;
-  height: 60px;
+  height: var(--bottom-tab-height);
   box-shadow: 0 -2px 5px -2px #333;
 }
 .mobile-bottom-nav__item {
@@ -67,4 +93,24 @@
 .mobile-bottom-nav__item-content {
   display: flex;
   flex-direction: column;
+}
+
+
+
+/* TAB CSS */
+.tab-content {
+    /* display: none; */
+    flex: 1; /* 남은 공간을 차지하도록 설정 */
+    overflow-y: auto; /* 콘텐츠가 넘칠 경우 스크롤을 추가 */
+}
+.baseTab  {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--bottom-tab-height));
+}
+
+/* ICON COLOR */
+#add_icon{
+ color: var(--dark-white);
+ font-size: 35px;
 }

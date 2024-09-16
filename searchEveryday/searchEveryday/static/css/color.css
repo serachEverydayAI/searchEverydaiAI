@@ -3,6 +3,7 @@
     --main-color: #F9D838;
     --background-color: #18171C;
 
+    --dark-white: #ebeae8;
     --main-border: 2px solid #3498db;
 }
 
@@ -28,4 +29,19 @@
 
 .common-border {
     border: var(--main-border);
+}
+
+
+/* MOBILE TAB COLOR */
+.mobile-bottom-nav__item.active .material-icons {
+    color: var(--main-color); /* 활성화된 아이콘 색상 */
+}
+.mobile-bottom-nav__item.active .mobile-bottom-nav__item-content {
+    color: var(--main-color); /* 활성화된 텍스트 색상 */
+}
+.mobile-bottom-nav__item .material-icons {
+    /* color: #000;  비활성화된 아이콘 색상 */
+}
+.mobile-bottom-nav__item .mobile-bottom-nav__item-content {
+    /* color: #000;  비활성화된 텍스트 색상 */
 }

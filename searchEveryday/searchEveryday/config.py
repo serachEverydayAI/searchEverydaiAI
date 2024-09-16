@@ -22,6 +22,11 @@ KAKAO_CONFIG = {
 URI = {
     "DEFAULT": 'http://127.0.0.1:8000',
     "TAB": 'searchEveryday/tab/baseTab.html',
+
+    "HOMETAB": 'searchEveryday/tab/homeTab.html',
+    "STATISTICTAB": 'searchEveryday/tab/statisticTab.html',
+    "MYINFOTAB": 'searchEveryday/tab/myInfoTab.html',
+
     "LOGIN" : 'searchEveryday/main/login.html',
     "HOME" : 'searchEveryday/main/myInfo.html',
 }
