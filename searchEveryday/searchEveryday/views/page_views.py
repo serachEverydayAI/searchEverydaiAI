@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from ..config import URI
 
-def index(request):
+def login(request):
     _context = {'check':False}
     print(f'Request : {request.session.get('access_token')}')
     if request.session.get('access_token'):

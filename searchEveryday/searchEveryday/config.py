@@ -21,7 +21,7 @@ KAKAO_CONFIG = {
 
 URI = {
     "DEFAULT": "http://127.0.0.1:8000",
-    "LOGIN" : 'searchEveryday/main/index.html',
+    "LOGIN" : 'searchEveryday/main/login.html',
     "HOME" : 'searchEveryday/main/home.html',
 }
 

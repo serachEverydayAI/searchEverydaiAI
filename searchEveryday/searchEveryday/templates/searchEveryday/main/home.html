@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
-    {% include '../common/html/head.html' %}
-</head>
+{% extends './base.html' %}
 
+{% block content %}
 <body class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
 
     <div class="container text-center">
@@ -29,6 +24,4 @@
 
 </div>
 
-<script src="{% static 'searchEveryday/js/common_body.js' %}"></script>
-</body>
-</html>
+{% endblock%}
