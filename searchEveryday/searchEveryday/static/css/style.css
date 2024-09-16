@@ -1,0 +1,70 @@
+
+:root {
+    --min-width: 0px;
+    --max-width: 768px;
+    --min-height: 0px;
+}
+
+.root-size {
+    min-width: var(--min-width);
+    max-width: var(--max-width);
+    /* min-height: var(--min-height); */
+    margin: 0 auto; /* 중앙 정렬 */
+    height: 100vh;
+    position: relative;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+.align-center {
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center;     /* 수직 가운데 정렬 */
+}
+
+.align-center-absolute {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+}
+
+/* FONT */
+@font-face {
+    font-family: 'Batang';
+    src: url('/static/fonts/batang.ttc') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.login-font {
+    font-family: 'Batang', serif;
+}
+
+/* MOBILE TAB NAVIGATION  */
+.mobile-bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  will-change: transform;
+  transform: translateZ(0);
+  display: flex;
+  height: 60px;
+  box-shadow: 0 -2px 5px -2px #333;
+}
+.mobile-bottom-nav__item {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mobile-bottom-nav__item-content {
+  display: flex;
+  flex-direction: column;
+}

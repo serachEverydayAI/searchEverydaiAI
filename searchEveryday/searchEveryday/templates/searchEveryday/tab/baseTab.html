@@ -1,0 +1,16 @@
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div class="root-size background-color font-main-color">
+        {% block tab_content %}
+            <!-- 콘텐츠가 여기에 들어갑니다. -->
+        {% endblock %}
+    </div>
+    <link rel="stylesheet" href="{% static 'css/color.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</body>
+</html>
+

@@ -18,3 +18,6 @@ def home(request):
         return render(request, URI['HOME'],{'nickname': nickname,'picture':picture})
     else:
         return redirect(URI['DEFAULT'])
+
+def tab(request):
+    return render(request,URI['TAB'])

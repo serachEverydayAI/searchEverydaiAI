@@ -3,20 +3,16 @@
     <meta charset="UTF-8">
     <title>{% block title %}My Site{% endblock %}</title>
     {% load static %}
-    {% include '../common/html/head.html' %}
-    <style>
-        .fixed-size {
-            max-width: 1200px; /* 고정된 최대 너비 */
-            margin: 0 auto; /* 중앙 정렬 */
-        }
-    </style>
+    {% include '../common/head.html' %}
 </head>
-<body>
-    <div class="container fixed-size" style="background-color: black;">
+<body class="outskirt-color">
+    <div class="root-size">
         {% block content %}
         <!-- 콘텐츠가 여기에 들어갑니다. -->
         {% endblock %}
     </div>
-    <script src="{% static '/js/common_body.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'css/color.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </body>
 </html>

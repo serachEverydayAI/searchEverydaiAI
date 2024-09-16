@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from .views.index import index
-from .views.page_views import login, home
+from .views.page_views import login, home, tab
 from .views.auth_views import kakaoLoginLogic, kakaoLoginLogicRedirect, kakaoLogout, kakaoLogoutWithAcccount
 from django.shortcuts import render
 from django.conf.urls import handler404
@@ -14,10 +13,10 @@ handler404 = custom_404
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('index', index),
 
     path('', login),
     path('home/', home),
+    path('tab/', tab),
 
     path('kakaoLoginLogic/', kakaoLoginLogic),
     path('kakaoLoginLogicRedirect/', kakaoLoginLogicRedirect),

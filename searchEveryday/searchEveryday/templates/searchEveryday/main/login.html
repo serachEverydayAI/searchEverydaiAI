@@ -1,27 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    {% include '../common/html/head.html' %}
-    <title>Kakao Login</title>
-</head>
-<body class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-    {% if check %}
-    <div class="container text-center">
-        <h1 class="mb-3">카카오톡 로그아웃</h1>
-        <form action="/kakaoLogout" method="GET">
-            <input type="submit" value="카카오톡 로그아웃"/>
-        </form>
+{% extends './base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .background-div {
+        background-size: cover; /* 이미지 크기를 div에 맞게 조절 */
+        background-position: center; /* 이미지를 가운데에 배치 */
+    }
+</style>
+<div class="container background-div full-height" id="background-div">
+
+    <div class="font-main-color login-font" style="position: absolute; top: 20%; margin-left:15px">
+        <h3 class="mb-3">AI가 정리한 뉴스</h3>
+        <h1 class="mb-3"><b>매일검색</b></h1>
     </div>
-    {% else %}
-    <div class="container text-center">
-        <h2 class="mb-3">카카오톡으로 로그인하기</h2>
-        <form action="/kakaoLoginLogic" method="GET">
-            <input type="image" src="{% static 'image/login_image.png' %}" alt="Login with Kakao"/>
-        </form>
+
+    <div class="align-center align-center-absolute" style="position: absolute; bottom: 10%;">
+        {% if check %}
+        <div class="container">
+            <form class="align-center" action="/kakaoLogout" method="GET">
+                <input type="submit" value="카카오톡 로그아웃"/>
+            </form>
+        </div>
+        {% else %}
+        <div class="container">
+            <form class="align-center" action="/kakaoLoginLogic" method="GET">
+                <input type="image" src="{% static 'image/icon/login_image.png' %}" alt="Login with Kakao"/>
+            </form>
+        </div>
     </div>
     {% endif %}
+</div>
 
-<script src="{% static 'js/common_body.js' %}"></script>
-</body>
-</html>
+<script>
+    const images = [
+        "{% static 'image/design/login_background1.png' %}",
+        "{% static 'image/design/login_background2.png' %}",
+        "{% static 'image/design/login_background3.png' %}"
+    ];
+
+    function setRandomBackgroundImage() {
+        // 랜덤 인덱스 생성
+        const randomIndex = Math.floor(Math.random() * images.length);
+        // 배경 이미지 설정
+        document.getElementById('background-div').style.backgroundImage = `url(${images[randomIndex]})`;
+    }
+
+    // 페이지 로드 시 배경 이미지 설정
+    window.onload = setRandomBackgroundImage;
+</script>
+
+{% endblock%}

@@ -1,0 +1,31 @@
+:root {
+    --outskirt-color: #EEEEEE;
+    --main-color: #F9D838;
+    --background-color: #18171C;
+
+    --main-border: 2px solid #3498db;
+}
+
+/* COLOR */
+.common-color {
+    color: var(--main-color);
+}
+
+/* FONT COLOR */
+.font-main-color {
+    color: #F2F2F2;
+}
+
+
+/* BACKGROUND COLOR */
+.background-color {
+    background-color: var(--background-color);
+}
+.outskirt-color {
+    background-color: var(--outskirt-color);
+}
+
+
+.common-border {
+    border: var(--main-border);
+}
