@@ -31,11 +31,13 @@
                 loadContent(url);
             });
 
-            // 기본적으로 첫 번째 탭의 콘텐츠를 로드
-            if ($('.mobile-bottom-nav__item').length > 0) {
-                const initialUrl = $('.mobile-bottom-nav__item').first().data('url');
+            const $firstTab = $('.mobile-bottom-nav__item').first();
+            if ($firstTab.length > 0) {
+                $firstTab.addClass('active');
+                const initialUrl = $firstTab.data('url');
                 loadContent(initialUrl);
             }
+
         });
     </script>
 {% endblock%}

@@ -1,5 +1,15 @@
-<div class="">
-    <h2>MyInfoTab</h2>
-    <h2>MyInfoTab</h2>
-    <h2>MyInfoTab</h2>
+{% load static %}
+<div class="parent-size flex_column padding_side">
+    <div class="profile padding_side">
+        <img class="profile_img"
+             src="{% static 'image/icon/default_profile.png' %}"/>
+        <h5>닉네임</h5>
+    </div>
+    <div class="links">
+        <div class="link-item item-border" onclick="location.href='#settings'">설정</div>
+        <div class="link-item item-border" onclick="location.href='#notices'">공지사항</div>
+        <div class="link-item item-border" onclick="location.href='#faq'">자주하는 질문</div>
+        <div class="link-item item-border" onclick="location.href='#terms'">약관 및 정책</div>
+        <div class="link-item item-border" onclick="location.href='#feedback'">앱 평가하기</div>
+    </div>
 </div>

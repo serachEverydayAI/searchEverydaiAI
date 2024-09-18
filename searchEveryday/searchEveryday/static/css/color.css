@@ -1,10 +1,14 @@
 :root {
     --outskirt-color: #EEEEEE;
     --main-color: #F9D838;
+    --light-main-color:#ffed96;
     --background-color: #18171C;
 
     --dark-white: #ebeae8;
+
+    /* Border */
     --main-border: 2px solid #3498db;
+    --light-border: 1px solid #242322;
 }
 
 /* COLOR */
@@ -15,6 +19,12 @@
 /* FONT COLOR */
 .font-main-color {
     color: #F2F2F2;
+}
+.font-highlight-color {
+    color: var(--main-color);
+}
+.font-clock-color {
+    color: var(--dark-white);
 }
 
 
@@ -44,4 +54,18 @@
 }
 .mobile-bottom-nav__item .mobile-bottom-nav__item-content {
     /* color: #000;  비활성화된 텍스트 색상 */
+}
+
+
+/* myInfo Color */
+.item-border {
+    padding: 15px;
+    border-bottom: var(--light-border);
+}
+.link-item {
+    color: var(--dark-white); /* 텍스트 색상 */
+    cursor: pointer; /* 커서 변경 */
+}
+.link-item:hover {
+    color: var(--light-main-color); /* Hover 시 배경 색상 */
 }
