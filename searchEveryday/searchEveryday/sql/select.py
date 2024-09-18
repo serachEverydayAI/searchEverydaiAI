@@ -25,3 +25,7 @@ def getSeCustInfo_WithCi(cust_ci, conn):
              " WHERE cust_ci = ?")
     return execute_query(query, (cust_ci, ), conn)
 
+def getSeCustInfo_WithCust_id(cust_id, conn):
+    query = ("SELECT * FROM se_cust_info"
+             " WHERE cust_id = ?")
+    return execute_query(query, (cust_id, ), conn)

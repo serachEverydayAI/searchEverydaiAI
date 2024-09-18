@@ -65,6 +65,9 @@
 .margin_all_zero {
     margin: 0px
 }
+.margin_all_10px {
+    margin: 10px;
+}
 
 
 /* FONT */
@@ -212,5 +215,5 @@
     font: inherit;
     cursor: pointer;
     padding: 0;
-    margin: 10px;
+
 }

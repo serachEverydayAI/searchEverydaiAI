@@ -42,14 +42,14 @@ def kakaoLoginLogicRedirect(request):
     if decoded_id_token:
         default_values = {}
         extracted_values = extract_values(decoded_id_token, default_values)
-        addCustIfFirst(extracted_values)
+        cust_id = addCustIfFirst(extracted_values)
         nickname = extracted_values['nickname']
         picture = extracted_values['picture']
 
         request.session['nickname'] = nickname
         request.session['picture'] = picture
+        request.session['cust_id'] = cust_id
     request.session.modified = True
-
     return redirect(URI['DEFAULT'] + '/index')
 
 def kakaoLogout(request):
@@ -92,6 +92,10 @@ def addCustIfFirst(data):
             )
         elif len(df_SeCustInfo) > 1:
             print('Error: Duplication Customer', df_SeCustInfo)
+        
+        #고객번호만 내려주기
+        cust_info = df_SeCustInfo.iloc[0]
+        return cust_info['cust_id']
 
 
 def extract_values(decoded_id_token, default_values=None):

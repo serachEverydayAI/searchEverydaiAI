@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from django.contrib.auth import views as auth_views
-from .views.page_views import login, index, home_tab, statistic_tab, myInfo_tab, myInfo_details
+from .views.myInfo_views import myInfo_details
+from .views.page_views import login, index, home_tab, statistic_tab, myInfo_tab
 from .views.auth_views import kakaoLoginLogic, kakaoLoginLogicRedirect, kakaoLogout, kakaoLogoutWithAcccount
 from django.shortcuts import render
 from django.conf.urls import handler404

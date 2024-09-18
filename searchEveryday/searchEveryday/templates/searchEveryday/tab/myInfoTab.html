@@ -2,17 +2,23 @@
 <div class="parent-size flex_column padding_side">
     <div class="padding_all flex_row">
         <div class="profile profile_start">
-            {% if picture %}
-            <img class="profile_img" src="{{ picture }}" alt="Profile Picture">
+            {% if request.session.picture %}
+            <img class="profile_img" src="{{ request.session.picture }}" alt="Profile Picture">
             {% else %}
             <img class="profile_img" src="{% static 'image/icon/default_profile.png' %}"/>
             {% endif %}
-            <h5 class="margin_all_zero">{{ nickname }}</h5>
+            <h5 class="margin_all_zero">{{ request.session.nickname }}</h5>
         </div>
         <div class="profile">
-            <a href="/myInfo_details/">
-                <i class="material-icons arrow_icon_style">chevron_right</i>
-            </a>
+
+            <form class="align-center" action="/myInfo_details/" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="cust_id" value="{{ request.session.cust_id }}">
+                <button type="submit" class="btn-no-style">
+                    <i class="material-icons arrow_icon_style">chevron_right</i>
+                </button>
+            </form>
+
         </div>
     </div>
     <div class="links">

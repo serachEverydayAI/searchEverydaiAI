@@ -2,6 +2,7 @@
     --outskirt-color: #EEEEEE;
     --main-color: #F9D838;
     --light-main-color:#ffed96;
+    --dark-main-color:#ffd300;
     --background-color: #18171C;
 
     --dark-white: #ebeae8;
@@ -68,4 +69,10 @@
 }
 .link-item:hover {
     color: var(--light-main-color); /* Hover 시 배경 색상 */
+}
+.hyperLink-color {
+    color: var(--main-color);
+}
+.hyperLink-color:hover {
+    color: var(--dark-main-color);
 }

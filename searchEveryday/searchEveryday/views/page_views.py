@@ -34,14 +34,6 @@ def statistic_tab(request):
 
 def myInfo_tab(request):
     if login_yn(request):
-        nickname = request.session.get('nickname', 'No nickname')
-        picture = request.session.get('picture', 'No picture')
-        return render(request, URI['MYINFOTAB'],{'nickname': nickname, 'picture': picture})
-    else:
-        return redirect(URI['DEFAULT'])
-
-def myInfo_details(request):
-    if login_yn(request):
-        return render(request, URI['MYINFO_DETAILS'])
+        return render(request, URI['MYINFOTAB'])
     else:
         return redirect(URI['DEFAULT'])
