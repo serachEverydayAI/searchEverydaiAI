@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from .views.page_views import login, index, home_tab, statistic_tab, myInfo_tab
+from django.contrib.auth import views as auth_views
+from .views.page_views import login, index, home_tab, statistic_tab, myInfo_tab, myInfo_details
 from .views.auth_views import kakaoLoginLogic, kakaoLoginLogicRedirect, kakaoLogout, kakaoLogoutWithAcccount
 from django.shortcuts import render
 from django.conf.urls import handler404
@@ -19,7 +20,9 @@ urlpatterns = [
     path('index/', index),
     path('home/', home_tab, name='home_tab'),
     path('statistic/', statistic_tab, name='statistic_tab'),
-    path('my-info/', myInfo_tab, name='myInfo_tab'),
+    path('myInfo/', myInfo_tab, name='myInfo_tab'),
+
+    path('myInfo_details/', myInfo_details, name='myInfo_details'),
 
     path('kakaoLoginLogic/', kakaoLoginLogic),
     path('kakaoLoginLogicRedirect/', kakaoLoginLogicRedirect),

@@ -27,7 +27,9 @@ URI = {
     "STATISTICTAB": 'searchEveryday/tab/statisticTab.html',
     "MYINFOTAB": 'searchEveryday/tab/myInfoTab.html',
 
-    "LOGIN" : 'searchEveryday/main/login.html',
+    "MYINFO_DETAILS": 'searchEveryday/tab/myInfo/details.html',
+
+    "LOGIN" : 'searchEveryday/registration/login.html',
 }
 
 
