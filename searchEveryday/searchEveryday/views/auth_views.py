@@ -50,7 +50,7 @@ def kakaoLoginLogicRedirect(request):
         request.session['picture'] = picture
     request.session.modified = True
 
-    return redirect(URI['DEFAULT'] + '/home')
+    return redirect(URI['DEFAULT'] + '/index')
 
 def kakaoLogout(request):
     _token = request.session['access_token']

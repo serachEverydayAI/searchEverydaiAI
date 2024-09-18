@@ -1,9 +1,12 @@
 {% load static %}
 <div class="parent-size flex_column padding_side">
-    <div class="profile padding_side">
-        <img class="profile_img"
-             src="{% static 'image/icon/default_profile.png' %}"/>
-        <h5>닉네임</h5>
+    <div class="profile padding_all">
+        {% if picture %}
+            <img class="profile_img" src="{{ picture }}" alt="Profile Picture"  >
+        {% else %}
+            <img class="profile_img" src="{% static 'image/icon/default_profile.png' %}"/>
+        {% endif %}
+        <h5 class="margin_all_zero">{{ nickname }}</h5>
     </div>
     <div class="links">
         <div class="link-item item-border" onclick="location.href='#settings'">설정</div>
@@ -12,4 +15,16 @@
         <div class="link-item item-border" onclick="location.href='#terms'">약관 및 정책</div>
         <div class="link-item item-border" onclick="location.href='#feedback'">앱 평가하기</div>
     </div>
+
+    <div>
+        <div class="d-flex justify-content-center mb-3 mt-3">
+            <form action="/kakaoLogout" method="GET">
+                <button type="submit" class="btn-no-style font-highlight-color">로그아웃</button>
+            </form>
+            <form action="/kakaoLogoutWithAcccount" method="GET">
+                <button type="submit" class="btn-no-style font-main-color">연결끊기</button>
+            </form>
+        </div>
+    </div>
+
 </div>

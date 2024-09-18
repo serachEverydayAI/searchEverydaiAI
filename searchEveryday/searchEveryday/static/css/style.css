@@ -46,11 +46,18 @@
     width: 40%;
     object-fit: contain;
 }
+
+/* PADDING & MARGIN */
+/* top right bottom left */
 .padding_side {
-    /* top right bottom left */
     padding: 0px 15px 0px 15px;
 }
-
+.padding_all {
+    padding: 15px;
+}
+.margin_all_zero {
+    margin: 0px
+}
 
 
 /* FONT */
@@ -135,13 +142,25 @@
     justify-content: left;
 }
 .profile_img {
-    border-radius: 50%;
+    border-radius: 40%;
     /* width: 100px;  프로필 이미지 크기 */
-    height: 40%; /* 프로필 이미지 크기 */
+    height: 70%; /* 프로필 이미지 크기 */
     margin-right: 30px;
 }
 .links {
     height: 80%;
     overflow-y: auto; /* 세로 스크롤 가능 */
+}
+
+
+
+/* BUTTON */
+.btn-no-style {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+    margin: 10px;
 }
 

@@ -17,16 +17,17 @@
     <div class="align-center align-center-absolute" style="position: absolute; bottom: 10%;">
         {% if check %}
         <div class="container">
-            <form class="align-center" action="/kakaoLogout" method="GET">
-                <input type="submit" value="카카오톡 로그아웃"/>
-            </form>
-        </div>
-        {% else %}
-        <div class="container">
             <form class="align-center" action="/kakaoLoginLogic" method="GET">
                 <input type="image" src="{% static 'image/icon/login_image.png' %}" alt="Login with Kakao"/>
             </form>
         </div>
+        {% else %}
+        <div class="container">
+            <form class="align-center" action="/kakaoLogout" method="GET">
+                <input type="submit" value="카카오톡 로그아웃"/>
+            </form>
+        </div>
+
     </div>
     {% endif %}
 </div>
