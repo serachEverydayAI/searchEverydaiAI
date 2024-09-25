@@ -1,0 +1,50 @@
+{% extends '../../common/base.html' %}
+{% load static %}
+{% block content %}
+<div class="padding_all background-color font-main-color parent-size flex_column">
+    <a href="javascript:history.back();">
+        <i class="material-icons back_icon padding_all arrow_icon_style">chevron_left</i>
+    </a>
+    <div class="padding_all title_container ">
+        <div class="title_head">
+            <h5 style="margin:0px;"><b>검색 단어 설정</b></h5>
+        </div>
+
+    </div>
+    <div class="flex_column padding_side" style="margin-top:45px; height: 80%;">
+        <div class="detail_row">
+            <div class="detail_label">검색어 1</div>
+            <div class="detail_value background-input-value padding_side_little" contenteditable="true" id="keyword1">
+                {{ request.session.keyword1 }}
+            </div>
+        </div>
+        <div class="detail_row">
+            <div class="detail_label">검색어 2</div>
+            <div class="detail_value background-input-value padding_side_little" contenteditable="true" id="keyword2">
+                {{ request.session.keyword2 }}
+            </div>
+        </div>
+        <div class="detail_row">
+            <div class="detail_label">검색어 3</div>
+            <div class="detail_value background-input-value padding_side_little" contenteditable="true" id="keyword3">
+                {{ request.session.keyword3 }}
+            </div>
+        </div>
+        <br><br>
+        <div class="font-small ">
+            ※ 한번 설정한 검색어는 변경할 수 없습니다.<br>
+            설정에 유의해 주시기를 바랍니다.
+        </div>
+        <div class="bottom-center-absolute">
+            <button type="button" class="btn-submit padding_submit_btn font-main-black-color" onclick="submitForm()">
+                <b>저장하기</b>
+            </button>
+        </div>
+        <div id="toast" class="toast_color font-main-black-color toast ">
+            입력된 검색어가 없습니다.
+        </div>
+    </div>
+</div>
+
+{% endblock%}
+

@@ -7,7 +7,56 @@
             </p>
         </div>
     </div>
+            <div class="detail_row">
+            <div class="detail_label">고객번호</div>
+            <div class="detail_value">
+                {{ request.session.cust_id }}
+            </div>
+        </div>
     <div style="flex:1;">
-        <i class="material-icons xCenter flex_column" id="add_icon">add</i>
+        <!--
+        <form class="xCenter flex_column margin_all_zero " action="/addSearchWord/" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="cust_id" value="{{ request.session.cust_id }}">
+                <button type="submit" class="btn-no-style">
+                    <i class="material-icons " id="add_icon">add</i>
+                </button>
+            </form>
+        -->
+        <input type="hidden" id="cust_id" value="{{ request.session.cust_id }}">
+        <button id="addSearchWordButton" class="btn-no-style" onclick="addSearchWord()">
+            <i class="material-icons" id="add_icon">add</i>
+        </button>
     </div>
 </div>
+
+<script>
+    function addSearchWord() {
+        fetch('/addSearchWord/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ cust_id: custId }),
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;  // 리다이렉트 URL로 이동
+            } else {
+                showToast(data.error);  // 오류 메시지를 toast에 표시
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('서버 오류가 발생했습니다.');  // 네트워크 오류 처리
+        });
+    }
+</script>

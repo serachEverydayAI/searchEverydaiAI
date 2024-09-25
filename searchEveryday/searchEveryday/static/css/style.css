@@ -59,6 +59,9 @@
 .padding_side {
     padding: 0px 15px 0px 15px;
 }
+.padding_side_little {
+    padding: 0px 8px 0px 8px;
+}
 .padding_all {
     padding: 15px;
 }
@@ -67,6 +70,9 @@
 }
 .margin_all_10px {
     margin: 10px;
+}
+.padding_submit_btn {
+    padding: 5px 30px;
 }
 
 
@@ -143,10 +149,13 @@
 .detail_label {
     flex: 4;
     font-weight: bold;
+    min-height: 100%;
 }
 .detail_value {
     flex: 6;
+    min-height: 100%;
 }
+
 
 /* TAB CSS */
 .tab-content {
@@ -215,5 +224,44 @@
     font: inherit;
     cursor: pointer;
     padding: 0;
+}
+.btn-submit {
+    background: var(--main-color);
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    border-radius: 5%;
+}
+.bottom-center-absolute {
+  position: absolute;
+  bottom: 45;
+  left: 50%; /* 수평 중앙 위치 */
+  transform: translateX(-50%); /* 중앙 정렬 */
+}
 
+/* TOAST MESSAGE */
+.toast {
+    position: fixed;
+    width: 100%;
+    bottom: 50;
+    left: 50%; /* 수평 중앙 위치 */
+    visibility: hidden;
+
+    text-align: center;
+    border-radius: 5px;
+    z-index: 1;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 4px;  /* 세로 가로 순 */
+    transition: visibility 0s linear 0.5s, opacity 0.5s linear; /* 지연 추가 */
+    opacity: 0;
+
+    max-width: 50%;
+    transform: translateX(-50%); /* 수평 중앙 정렬 */
+
+}
+.toast.show {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.5s linear; /* 나타날 때 */
 }

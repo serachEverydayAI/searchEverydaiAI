@@ -29,3 +29,8 @@ def getSeCustInfo_WithCust_id(cust_id, conn):
     query = ("SELECT * FROM se_cust_info"
              " WHERE cust_id = ?")
     return execute_query(query, (cust_id, ), conn)
+
+def getSeCustKeyword_WithCust_id(cust_id, conn):
+    query = ("SELECT * FROM se_cust_keyword"
+             " WHERE cust_id = ?")
+    return execute_query(query, (cust_id, ), conn)

@@ -117,3 +117,20 @@ def insertSeCustInfo(conn, cust_nm, cust_birth, cust_telco, cust_hp, cust_email,
     execute_query(conn, query, params)
     conn.commit()
     print(f"Inserted new record CUST_ID: {cust_id} {nickname}")
+
+
+def insertCustKeyword(cust_id, keyword1, keyword2, keyword3, conn):
+    nowDate = datetime.now().strftime('%Y%m%d')
+    nowTime = datetime.now().strftime('%H%M%S')
+    query = '''
+        INSERT INTO se_cust_keyword (
+            cust_id, keyword, reg_date, reg_time, update_date, update_time
+        ) VALUES (?, ?, ?, ?, ?, ?)
+    '''
+    params = (
+        cust_id, keyword1 + "|" + keyword2 +"|"+ keyword3,
+        nowDate, nowTime, nowDate, nowTime
+    )
+    execute_query(conn, query, params)
+    conn.commit()
+    print(f"Inserted new record CUST_ID: {cust_id}")

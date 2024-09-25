@@ -4,15 +4,23 @@
     <title>{% block title %}AI가 정리한 뉴스, 매일검색{% endblock %}</title>
     {% load static %}
     {% include './head.html' %}
+
 </head>
+<link rel="icon" href="{% static 'favicon_v2.ico' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'css/color.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% block scripts %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
 <body class="outskirt-color">
     <div class="root-size">
         {% block content %}
-        <!-- Contents -->
+            <!-- Contents -->
         {% endblock %}
     </div>
-
-    <link rel="stylesheet" href="{% static 'css/color.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </body>
 </html>
+
+<script>
+    const csrfToken = '{{ csrf_token }}'; // Django의 CSRF 토큰을 가져옵니다.
+</script>

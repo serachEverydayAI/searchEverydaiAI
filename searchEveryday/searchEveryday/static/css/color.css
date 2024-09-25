@@ -4,6 +4,7 @@
     --light-main-color:#ffed96;
     --dark-main-color:#ffd300;
     --background-color: #18171C;
+    --bg-dark-input-color: #303030;
 
     --dark-white: #ebeae8;
 
@@ -27,6 +28,9 @@
 .font-clock-color {
     color: var(--dark-white);
 }
+.font-main-black-color {
+    color: #0D0D0D;
+}
 
 
 /* BACKGROUND COLOR */
@@ -35,6 +39,10 @@
 }
 .outskirt-color {
     background-color: var(--outskirt-color);
+}
+.background-input-value {
+    background-color: var(--bg-dark-input-color);
+    opacity: 70%;
 }
 
 
@@ -75,4 +83,8 @@
 }
 .hyperLink-color:hover {
     color: var(--dark-main-color);
+}
+
+.toast_color {
+    background-color: #dbdbdb;
 }

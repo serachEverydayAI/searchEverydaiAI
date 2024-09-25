@@ -28,6 +28,7 @@ URI = {
     "MYINFOTAB": 'searchEveryday/tab/myInfoTab.html',
 
     "MYINFO_DETAILS": 'searchEveryday/tab/myInfo/details.html',
+    "ADDSEARCHWORD": 'searchEveryday/tab/home/addSearchWord.html',
 
     "LOGIN" : 'searchEveryday/registration/login.html',
 }
