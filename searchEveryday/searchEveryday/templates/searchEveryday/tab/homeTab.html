@@ -7,12 +7,15 @@
             </p>
         </div>
     </div>
-            <div class="detail_row">
-            <div class="detail_label">고객번호</div>
-            <div class="detail_value">
-                {{ request.session.cust_id }}
-            </div>
+    <div class="detail_row">
+        <div class="detail_label">고객번호</div>
+        <div class="detail_value">
+            {{ request.session.cust_id }}
         </div>
+    </div>
+    <div id="toast" class="toast_color font-main-black-color toast ">
+
+    </div>
     <div style="flex:1;">
         <!--
         <form class="xCenter flex_column margin_all_zero " action="/addSearchWord/" method="POST">
@@ -27,11 +30,14 @@
         <button id="addSearchWordButton" class="btn-no-style" onclick="addSearchWord()">
             <i class="material-icons" id="add_icon">add</i>
         </button>
-    </div>
-</div>
 
+    </div>
+
+</div>
 <script>
     function addSearchWord() {
+        const custId = document.getElementById('cust_id').value;
+
         fetch('/addSearchWord/', {
             method: 'POST',
             headers: {
@@ -51,6 +57,7 @@
             if (data.success) {
                 window.location.href = data.redirect_url;  // 리다이렉트 URL로 이동
             } else {
+                console.error('Error:', data);
                 showToast(data.error);  // 오류 메시지를 toast에 표시
             }
         })

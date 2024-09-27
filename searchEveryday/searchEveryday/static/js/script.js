@@ -1,11 +1,17 @@
-function showToast() {
+function showToast(message) {
     const toast = document.getElementById("toast");
-    toast.classList.add("show");
+    if (toast) {
+        toast.textContent = message;
+        toast.classList.add("show");
 
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 1500); // 1.5초 후에 토스트 메시지를 숨김
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 1500); // 1.5초 후에 토스트 메시지를 숨김
+    } else {
+        console.error("Toast element not found!");
+    }
 }
+
 function submitForm() {
     const keyword1 = document.getElementById('keyword1').innerText;
     const keyword2 = document.getElementById('keyword2').innerText;
@@ -19,7 +25,7 @@ function submitForm() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken,
             },
-            body: JSON.stringify({ keyword1, keyword2, keyword3 }),
+            body: JSON.stringify({ cust_id, keyword1, keyword2, keyword3 }),
         })
         .then(response => {
             if (response.ok) {
