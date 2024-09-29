@@ -15,12 +15,10 @@ def addSearchWord(request):
         df = getCustKeyword(cust_id)
         response_data = {'success': False, 'redirect_url': URI['DEFAULT']}
         if not df.empty:
-            print("2")
             cust_info = df.iloc[0]
             response_data['cust_id'] = cust_info["cust_id"]
             response_data['reg_date'] = cust_info["reg_date"]
             response_data['reg_time'] = cust_info["reg_time"]
-            print("3")
             # keyword가 None일 경우에 대한 처리 추가
             keyword_list = cust_info["keyword"].split("|") if cust_info.get("keyword") else []
             if len(keyword_list) > 0:
@@ -29,10 +27,8 @@ def addSearchWord(request):
                 response_data['keyword2'] = keyword_list[1]
             if len(keyword_list) > 2:
                 response_data['keyword3'] = keyword_list[2]
-            print("4")
         else:
             response_data['cust_id'] = cust_id
-        response_data['redirect_url'] = '/addSearchWordView/'
         response_data['success'] = True
         return JsonResponse(response_data)
     except json.JSONDecodeError:
@@ -53,24 +49,33 @@ def getCustKeyword(cust_id):
         )
         if len(df_SeCustKeyword) == 0:
             print(f'Registered Keyword is null: [{cust_id}]')
-        return df_SeCustKeyword
+    return df_SeCustKeyword
 
 
 def saveCustKeyword(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)  # JSON 데이터 파싱
-            cust_id = data.get('cust_id')
-            keyword1 = data.get('keyword1')
-            keyword2 = data.get('keyword2')
-            keyword3 = data.get('keyword3')
-            if not keyword1 and not keyword2 and not keyword3:
-                print("Nothing to Register")
-            else:
-                with DatabaseConnection(DB_PATH) as conn:
-                    df_SeCustKeyword = insertCustKeyword(cust_id, keyword1, keyword2, keyword3, conn)
-                    # if len(df_SeCustKeyword) == 0:
-                    #     print(f'Save Cust Keyword: [{cust_id}] - [{keyword1}, {keyword2}, {keyword3}]')
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    try:
+        data = json.loads(request.body)  # JSON 데이터 파싱
+        cust_id = data.get('cust_id')
+        keyword1 = data.get('keyword1')
+        keyword2 = data.get('keyword2')
+        keyword3 = data.get('keyword3')
+
+        df = getCustKeyword(cust_id)
+        if not keyword1 and not keyword2 and not keyword3:
+            errMessage = f"검색어를 입력해주세요."
+            print(errMessage)
+            return JsonResponse({'error': errMessage}, status=400)
+        elif df.empty:
+            with DatabaseConnection(DB_PATH) as conn:
+                df_SeCustKeyword = insertCustKeyword(cust_id, keyword1, keyword2, keyword3, conn)
+                # if len(df_SeCustKeyword) == 0:
+                #     print(f'Save Cust Keyword: [{cust_id}] - [{keyword1}, {keyword2}, {keyword3}]')
+        else:
+            errMessage = f"한 번 등록된 검색어는 변경이 불가합니다."
+            print(errMessage)
+            return JsonResponse({'error':errMessage}, status=400)
+    except json.JSONDecodeError:
+        errMessage="서버 오류입니다. 잠시 후 다시 시도 부탁드립니다."
+        print(errMessage)
+        return JsonResponse({'error':errMessage}, status=400)
     return redirect(URI['DEFAULT'])

@@ -32,8 +32,8 @@ function submitForm() {
                 console.log('저장 성공');
                 window.location.href = response.url;
             } else {
-                return response.json().then(errorData => {
-                    showToast(errorData.error);  // 실패 메시지를 toast에 전달
+                return response.json().then(data => {
+                    showToast(data.error);  // 실패 메시지를 toast에 전달
                 });
             }
         })
@@ -42,4 +42,25 @@ function submitForm() {
             console.error('Error:', error);
         });
     }
+}
+function move_addSearchWord() {
+    const custId = document.getElementById('cust_id').value;
+
+    fetch('/addSearchWordView/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ cust_id: custId }),
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = response.url;
+        } else {
+            return response.json().then(errorData => {
+                showToast(errorData.error);  // 실패 메시지를 toast에 전달
+            });
+        }
+    })
 }

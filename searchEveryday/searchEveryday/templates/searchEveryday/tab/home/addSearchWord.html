@@ -15,19 +15,16 @@
         <div class="detail_row">
             <div class="detail_label">검색어 1</div>
             <div class="detail_value background-input-value padding_side_little" contenteditable="true" id="keyword1">
-                {{ request.session.keyword1 }}
             </div>
         </div>
         <div class="detail_row">
             <div class="detail_label">검색어 2</div>
             <div class="detail_value background-input-value padding_side_little" contenteditable="true" id="keyword2">
-                {{ request.session.keyword2 }}
             </div>
         </div>
         <div class="detail_row">
             <div class="detail_label">검색어 3</div>
             <div class="detail_value background-input-value padding_side_little" contenteditable="true" id="keyword3">
-                {{ request.session.keyword3 }}
             </div>
         </div>
         <br><br>
@@ -41,13 +38,40 @@
             </button>
         </div>
         <div id="toast" class="toast_color font-main-black-color toast ">
-            입력된 검색어가 없습니다.
         </div>
     </div>
 </div>
 <script>
     const cust_id = "{{ request.session.cust_id }}";
+
+    $(document).ready(function() {
+        fetch('/addSearchWord/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ cust_id: cust_id }),
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        })
+        .then(data => {
+            $('#keyword1').text(data.keyword1);
+            $('#keyword2').text(data.keyword2);
+            $('#keyword3').text(data.keyword3);
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    });
+
 </script>
+
 
 
 {% endblock%}
