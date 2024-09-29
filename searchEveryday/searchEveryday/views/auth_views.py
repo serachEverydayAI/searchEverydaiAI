@@ -1,5 +1,7 @@
 import requests
 import jwt, json
+
+from ..common.confirm import keyword_yn
 from ..config import URI, KAKAO_CONFIG, DB_PATH, DatabaseConnection
 from django.shortcuts import render, redirect
 from ..sql.insert import insertSeCustInfo
@@ -49,6 +51,7 @@ def kakaoLoginLogicRedirect(request):
         request.session['nickname'] = nickname
         request.session['picture'] = picture
         request.session['cust_id'] = cust_id
+
     request.session.modified = True
     return redirect(URI['DEFAULT'] + '/index')
 

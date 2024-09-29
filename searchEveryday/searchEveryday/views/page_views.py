@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import json
-from ..common.confirm import login_yn
+from django.http import JsonResponse
+from ..common.confirm import login_yn, keyword_yn
 from ..config import URI
 
 def login(request):
@@ -20,9 +21,12 @@ def index(request):
         return redirect(URI['DEFAULT'])
 
 def home_tab(request):
-
+    request.session['keyword'] = keyword_yn(request)
     if login_yn(request):
-        return render(request, URI['HOMETAB'])
+        if request.session['keyword']:
+            return render(request, URI['HOMETABY'])
+        else:
+            return render(request, URI['HOMETABN'])
     else:
         return redirect(URI['DEFAULT'])
 
@@ -37,3 +41,4 @@ def myInfo_tab(request):
         return render(request, URI['MYINFOTAB'])
     else:
         return redirect(URI['DEFAULT'])
+

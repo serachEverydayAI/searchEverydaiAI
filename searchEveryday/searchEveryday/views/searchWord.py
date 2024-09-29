@@ -33,7 +33,7 @@ def addSearchWord(request):
         return JsonResponse(response_data)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
-    except Exception as e:  # 추가적인 예외 처리
+    except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
 def addSearchWordView(request):

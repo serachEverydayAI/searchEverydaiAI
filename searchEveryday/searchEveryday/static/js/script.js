@@ -12,6 +12,26 @@ function showToast(message) {
     }
 }
 
+function keyword_yn() {
+    const custId = document.getElementById('cust_id').value;
+
+    $.ajax({
+        url: '/keywordyn/',
+        type: 'GET',
+        data: { cust_id: custId },
+        success: function(response) {
+            if (response.keyword) {
+                console.log(response.keyword);
+            } else {
+                console.log(response.keyword);
+            }
+        },
+        error: function(xhr) {
+            console.error('Error:', xhr);
+        }
+    });
+}
+
 function submitForm() {
     const keyword1 = document.getElementById('keyword1').innerText;
     const keyword2 = document.getElementById('keyword2').innerText;

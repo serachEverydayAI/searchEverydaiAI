@@ -23,7 +23,8 @@ URI = {
     "DEFAULT": 'http://127.0.0.1:8000',
     "INDEX": 'searchEveryday/tab/baseTab.html',
 
-    "HOMETAB": 'searchEveryday/tab/homeTab.html',
+    "HOMETABN": 'searchEveryday/tab/homeTab_N.html',
+    "HOMETABY": 'searchEveryday/tab/homeTab_Y.html',
     "STATISTICTAB": 'searchEveryday/tab/statisticTab.html',
     "MYINFOTAB": 'searchEveryday/tab/myInfoTab.html',
 
