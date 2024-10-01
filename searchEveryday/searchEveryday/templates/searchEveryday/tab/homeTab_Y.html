@@ -2,14 +2,13 @@
 <style>
     .tabs {
         display: flex;
-        margin: 5px 0px 10px 0px;
         /* justify-content: space-around; */
     }
     .tab {
         /* flex: 1; */
         min-width: 80px;
         text-align: center;
-        padding: 5px 0px;
+        padding: 10px 0px;
         cursor: pointer;
         position: relative;
         color: var(--gray);
@@ -55,8 +54,8 @@
 
 <div class="parent-size flex_column">
     <div class="font-main-color">
-        <div class="padding_all title_container ">
-            <h5 style="margin:0px;">2024.10.01 (화)</h5>
+        <div class="padding_bottom_little title_container ">
+            <h5 style="margin:0px;" id="date">2024.01.01 (월)</h5>
             <div class="icons">
                 <span class="material-icons icon_no_style">add_box</span>
                 <span class="material-icons padding_side icon_no_style">calendar_today</span>
@@ -65,9 +64,9 @@
 
 
         <div class="tabs">
-            <div class="tab active" data-tab="tab1">캐스퍼</div>
-            <div class="tab" data-tab="tab2">손</div>
-            <div class="tab" data-tab="tab3">아크로 파크리온</div>
+            <div class="tab active" data-tab="tab1" id="keyword1">키워드1</div>
+            <div class="tab" data-tab="tab2" id="keyword2">키워드2</div>
+            <div class="tab" data-tab="tab3" id="keyword3">키워드3</div>
         </div>
 
         <div class="tab-content active" id="tab1">
@@ -79,7 +78,7 @@
                 </span>
             </div>
 
-            <div class="list-item">탭 1 아이템 1</div>
+            <div class="list-item" id="newsContainer">탭 1 아이템 1</div>
             <div class="list-item">탭 1 아이템 2</div>
             <div class="list-item">탭 1 아이템 3</div>
             <div class="list-item">탭 1 아이템 4</div>
@@ -139,4 +138,43 @@
             document.getElementById(tab.dataset.tab).classList.add('active');
         });
     });
+
+    const cust_id = "{{ request.session.cust_id }}";
+
+    $(document).ready(function() {
+        const fetchData = (url, body) => {
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify(body),
+            }).then(response => {
+                if (!response.ok) throw new Error('Network response was not ok.');
+                return response.json();
+            });
+        };
+
+        fetchData('/getMyKeyword/', { cust_id: cust_id })
+            .then(data => {
+                $('#keyword1').text(data.keyword1);
+                $('#keyword2').text(data.keyword2);
+                $('#keyword3').text(data.keyword3);
+                const formattedDate = data.date.slice(0, 4) + '.' + data.date.slice(4, 6) + '.' + data.date.slice(6, 8);
+                $('#date').text(formattedDate + " (" + data.korean_day + ")");
+                return fetchData('/getTodayNewsList/', { cust_id: cust_id, day:data.date,
+                 keyword1:data.keyword1 , keyword2:data.keyword2, keyword3:data.keyword3});
+            })
+            .then(newsData => {
+                // $('#newsContainer').empty(); // 기존 뉴스 목록 초기화
+                $('#newsContainer').text(newsData.title);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+    });
+
+
+
 </script>

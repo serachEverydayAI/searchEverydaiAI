@@ -65,6 +65,9 @@
 .padding_all {
     padding: 15px;
 }
+.padding_bottom_little {
+    padding: 15px 15px 8px 15px
+}
 .padding_all_little {
     padding: 8px;
 }

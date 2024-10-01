@@ -62,5 +62,5 @@ def server_init():
 
 
 if __name__ == "__main__":
-    #article_main()
-    server_init()
+    article_main()
+    #server_init()

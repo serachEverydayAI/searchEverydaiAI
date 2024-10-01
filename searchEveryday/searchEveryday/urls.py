@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.conf.urls import handler404
 from django.conf.urls import handler500
 
-from .views.searchWord import addSearchWord, saveCustKeyword, addSearchWordView
+from .views.searchWord import addSearchWord, saveCustKeyword, addSearchWordView, getMyKeyword, getTodayNewsList
 
 
 def custom_404(request, exception=None):
@@ -29,6 +29,9 @@ urlpatterns = [
     path('addSearchWord/', addSearchWord, name='addSearchWord'),
     path('addSearchWordView/', addSearchWordView, name='addSearchWordView'),
     path('saveCustKeyword/', saveCustKeyword, name='addSearchWord_save'),
+
+    path('getMyKeyword/', getMyKeyword, name='getMyKeyword'),
+    path('getTodayNewsList/', getTodayNewsList, name='getTodayNewsList'),
 
     path('kakaoLoginLogic/', kakaoLoginLogic),
     path('kakaoLoginLogicRedirect/', kakaoLoginLogicRedirect),

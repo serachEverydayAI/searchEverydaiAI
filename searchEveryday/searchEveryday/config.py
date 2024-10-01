@@ -32,6 +32,7 @@ URI = {
     "ADDSEARCHWORD": '/addSearchWord',
     "ADDSEARCHWORDVIEW": 'searchEveryday/tab/home/addSearchWord.html',
 
+
     "LOGIN" : 'searchEveryday/registration/login.html',
 }
 

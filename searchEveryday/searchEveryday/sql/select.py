@@ -20,6 +20,12 @@ def getCrawledDataHis_WithAnchorDate_Keyword(reg_date, keyword, conn):
              " WHERE reg_date = ? AND keyword = ?")
     return execute_query(query, (reg_date, keyword), conn)
 
+def getArticleResultHis_WithAnchorDate_Keyword(reg_date, keyword, conn):
+    query = ("SELECT * FROM article_result_his"
+             " WHERE reg_date = ? AND keyword = ?")
+    return execute_query(query, (reg_date, keyword), conn)
+
+
 def getSeCustInfo_WithCi(cust_ci, conn):
     query = ("SELECT * FROM se_cust_info"
              " WHERE cust_ci = ?")
