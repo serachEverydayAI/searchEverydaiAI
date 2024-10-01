@@ -65,6 +65,9 @@
 .padding_all {
     padding: 15px;
 }
+.padding_all_little {
+    padding: 8px;
+}
 .margin_all_zero {
     margin: 0px
 }
@@ -183,6 +186,14 @@
     font-size: 35px;
     color: white;
 }
+.icon_position_right {
+    position: absolute;
+    top: 10;
+    right: 10;
+}
+.icon_no_style {
+    font-size: 30px;
+}
 
 /* myInfo Style */
 .container {
@@ -204,6 +215,10 @@
     /* width: 100px;  프로필 이미지 크기 */
     height: 70%; /* 프로필 이미지 크기 */
     margin-right: 30px;
+}
+.bee_img {
+    margin: 6px;
+    width: 1.5em;
 }
 .links {
     height: 80%;
