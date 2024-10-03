@@ -283,3 +283,7 @@
     opacity: 1;
     transition: opacity 0.5s linear; /* 나타날 때 */
 }
+
+.list-line{
+    border-top: 1px solid var(--bg-dark-input-color);
+}

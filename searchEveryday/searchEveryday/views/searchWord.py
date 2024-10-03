@@ -1,6 +1,7 @@
 import json, traceback
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+import pandas as pd
 
 from ..common.util import get_today, day_mapping
 from ..config import URI, DB_PATH, DatabaseConnection
@@ -63,6 +64,20 @@ def getNewsList_WithDay_Keyword(day, cust_id):
             print(f'Registered History is null: [{day}: {cust_id}]')
     return df_article_his
 
+
+def getNewsList_WithDay_Keywords(day, keyword1, keyword2, keyword3):
+    with DatabaseConnection(DB_PATH) as conn:
+        df_article_his_keyword1 = getArticleResultHis_WithAnchorDate_Keyword(day, keyword1, conn)
+        df_article_his_keyword2 = getArticleResultHis_WithAnchorDate_Keyword(day, keyword2, conn)
+        df_article_his_keyword3 = getArticleResultHis_WithAnchorDate_Keyword(day, keyword3, conn)
+
+        df_article_his = pd.concat([df_article_his_keyword1, df_article_his_keyword2, df_article_his_keyword3],
+                                   ignore_index=True)
+
+        if df_article_his.empty:
+            print(f'Registered History is null: [{day}: {keyword1}, {keyword2}, {keyword3}]')
+
+    return df_article_his
 
 def saveCustKeyword(request):
     try:
@@ -129,14 +144,21 @@ def getTodayNewsList(request):
         keyword2 = data.get('keyword2')
         keyword3 = data.get('keyword3')
         day = data.get('day')
-        df = getNewsList_WithDay_Keyword(day, keyword1)
-        response_data = {'success': False}
+
+        df = getNewsList_WithDay_Keywords(day, keyword1, keyword2, keyword3)
+
+        response_data = []
         if not df.empty:
-            articles = df.iloc[0]
-            response_data['title'] = articles['title']
-            response_data['content'] = articles['content']
-        response_data['success'] = True
-        return JsonResponse(response_data)
+            for index, row in df.iterrows():
+                article_data = {
+                    'title': row['title'],
+                    'link': row['link'],
+                    'press': row['press'],
+                    'keywords': row['keyword'],
+                    'article_cnt': row['article_cnt'],
+                }
+                response_data.append(article_data)
+        return JsonResponse(response_data, safe=False)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
