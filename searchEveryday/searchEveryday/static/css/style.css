@@ -83,15 +83,24 @@
 
 
 /* FONT */
+/*
 @font-face {
     font-family: 'Batang';
     src: url('/static/fonts/batang.ttc') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
+*/
+
+@font-face {
+    font-family: 'RIDIBatang';
+    src: url('/static/fonts/RIDIBatang.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 .login-font {
-    font-family: 'Batang', serif;
+    font-family: 'RIDIBatang', serif;
 }
 .font-align-center {
     text-align: center;
@@ -266,15 +275,15 @@
     visibility: hidden;
 
     text-align: center;
-    border-radius: 5px;
+    border-radius: 3px;
     z-index: 1;
     font-size: 12px;
     font-weight: bold;
-    padding: 6px 4px;  /* 세로 가로 순 */
+    padding: 6px 4px;  /* 세로 가로 */
     transition: visibility 0s linear 0.5s, opacity 0.5s linear; /* 지연 추가 */
     opacity: 0;
 
-    max-width: 50%;
+    max-width: 70%;
     transform: translateX(-50%); /* 수평 중앙 정렬 */
 
 }

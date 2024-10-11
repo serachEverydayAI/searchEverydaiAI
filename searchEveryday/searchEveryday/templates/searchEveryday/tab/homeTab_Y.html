@@ -57,6 +57,17 @@
     .icons {
         display: flex;
     }
+
+
+     .ui-datepicker .ui-datepicker-header {
+        background: #007bff; /* 헤더 배경색 변경 */
+        color: #fff; /* 텍스트 색상 변경 */
+     }
+
+    .ui-datepicker table thead {
+        display: none;
+    }
+
 </style>
 
 
@@ -65,8 +76,9 @@
         <div class="padding_bottom_little title_container ">
             <h5 style="margin:0px;" id="date">2024.01.01 (월)</h5>
             <div class="icons">
-                <span class="material-icons icon_no_style">add_box</span>
-                <span class="material-icons padding_side icon_no_style">calendar_today</span>
+                <span class="material-icons icon_no_style" onclick="move_addSearchWord()">add_box</span>
+                <input type="text" id="datepicker" name="event_date" required>
+                <span class="material-icons padding_side icon_no_style" id="datepicker-button">calendar_today</span>
             </div>
         </div>
 
@@ -99,8 +111,8 @@
 
 
 <script>
-    const homeTabs = document.querySelectorAll('.homeTab');
-    const tabContents = document.querySelectorAll('.homeTab-content');
+    var homeTabs = document.querySelectorAll('.homeTab');
+    var tabContents = document.querySelectorAll('.homeTab-content');
 
     homeTabs.forEach(homeTab => {
         homeTab.addEventListener('click', () => {
@@ -115,7 +127,8 @@
         });
     });
 
-    const cust_id = "{{ request.session.cust_id }}";
+    var cust_id = "{{ request.session.cust_id }}";
+
     $(document).ready(function() {
         const fetchData = (url, body) => {
             return fetch(url, {
@@ -205,9 +218,39 @@
             .catch(error => {
                 console.error('Fetch error:', error);
             });
+        });
 
 
+        //Calendar script
+        $(function() {
+            $.datepicker.setDefaults({
+                    closeText: "닫기",
+                    currentText: "오늘",
+                    prevText: '이전 달',
+                    nextText: '다음 달',
+                    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                    weekHeader: "주",
+                    yearSuffix: '년'
+                });
+            $("#datepicker").datepicker({
+                dateFormat: "yy.mm.dd",
+                onSelect: function(dateText) {
+                    $("#date").text(dateText);
+                },
+            }).hide(); // 초기에는 숨깁니다.
 
-});
+            $("#datepicker-button").on("click", function() {
+                $("#datepicker").datepicker("show"); // 버튼 클릭 시 달력 표시
+            });
+
+            // 클릭 시 datepicker가 사라지지 않도록
+            $("#datepicker").on("focus", function() {
+                $(this).datepicker("show");
+            });
+        });
 
 </script>

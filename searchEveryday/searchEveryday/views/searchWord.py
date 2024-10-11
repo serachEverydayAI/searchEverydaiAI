@@ -98,7 +98,7 @@ def saveCustKeyword(request):
                 # if len(df_SeCustKeyword) == 0:
                 #     print(f'Save Cust Keyword: [{cust_id}] - [{keyword1}, {keyword2}, {keyword3}]')
         else:
-            errMessage = f"한 번 등록된 검색어는 변경이 불가합니다."
+            errMessage = f"한번 등록된 검색어는 변경이 불가합니다."
             print(errMessage)
             return JsonResponse({'error':errMessage}, status=400)
     except json.JSONDecodeError:

@@ -4,7 +4,6 @@
     <title>{% block title %}AI가 정리한 뉴스, 매일검색{% endblock %}</title>
     {% load static %}
     {% include './head.html' %}
-
 </head>
 <link rel="icon" href="{% static 'favicon_v2.ico' %}" type="image/x-icon">
 <link rel="stylesheet" href="{% static 'css/color.css' %}">
@@ -23,4 +22,5 @@
 
 <script>
     const csrfToken = '{{ csrf_token }}'; // Django의 CSRF 토큰을 가져옵니다.
+
 </script>
