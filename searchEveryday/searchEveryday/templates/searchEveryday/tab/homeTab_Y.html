@@ -58,16 +58,6 @@
         display: flex;
     }
 
-
-     .ui-datepicker .ui-datepicker-header {
-        background: #007bff; /* 헤더 배경색 변경 */
-        color: #fff; /* 텍스트 색상 변경 */
-     }
-
-    .ui-datepicker table thead {
-        display: none;
-    }
-
 </style>
 
 
@@ -130,28 +120,9 @@
     var cust_id = "{{ request.session.cust_id }}";
 
     $(document).ready(function() {
-        const fetchData = (url, body) => {
-            return fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
-                },
-                body: JSON.stringify(body),
-            }).then(response => {
-                if (!response.ok) throw new Error('Network response was not ok.');
-                return response.json();
-            });
-        };
-
         fetchData('/getMyKeyword/', { cust_id: cust_id })
             .then(data => {
-                $('#keyword1').text(data.keyword1);
-                $('#keyword2').text(data.keyword2);
-                $('#keyword3').text(data.keyword3);
-                const formattedDate = data.date.slice(0, 4) + '.' + data.date.slice(4, 6) + '.' + data.date.slice(6, 8);
-                $('#date').text(formattedDate + " (" + data.korean_day + ")");
-
+                updateKeywords(data);
                 return fetchData('/getTodayNewsList/', {
                     cust_id: cust_id,
                     day: data.date,
@@ -161,96 +132,67 @@
                 }).then(newsData => ({ newsData, data }));
             })
             .then(({ newsData, data }) => {
-                const containers = [
-                    { selector: '#newsContainer1', keyword: data.keyword1, summary: '#newsSummary1' },
-                    { selector: '#newsContainer2', keyword: data.keyword2, summary: '#newsSummary2' },
-                    { selector: '#newsContainer3', keyword: data.keyword3, summary: '#newsSummary3' }
-                ];
-
-                containers.forEach((container, cnt) => {
-                    $(container.selector).empty();
-                    let totalArticleCount = 0;
-
-                    const filteredNews = newsData.filter(newsItem =>
-                        newsItem.keywords && newsItem.keywords.includes(container.keyword)
-                    );
-
-                    const newsCount = filteredNews.length;
-
-                    if (newsCount === 0) {
-                        $(container.selector).append('<div style="margin-top: 20px;">오늘은 관련 뉴스가 없습니다.</div>');
-                    }
-
-                    filteredNews.forEach((newsItem, index) => {
-                        const isLastItem = index === newsCount - 1;
-                        const listItem = `
-                            <div class="list-item" data-link="${newsItem.link}">
-                                <div class="news-item" id="newsTitle${index + 1}"><b>${newsItem.title}</b></div>
-                                <div class="news-press ellipsis" id="newsPress${index + 1}">${newsItem.press}</div>
-                            </div>
-                            <hr class="list-line" style="${isLastItem ? 'margin-bottom: 50px;' : ''}">
-                        `;
-
-                        const articleCount = Number(newsItem.article_cnt);
-                        totalArticleCount += articleCount;
-
-                        $(container.selector).append(listItem);
-                    });
-                    if (newsCount > 0) {
-                        const spanItem = `
-                            <div class="tab_summary profile" id="newsSummary${cnt + 1}">
-                                <img class="bee_img" src="{% static 'image/icon/bee.png' %}"/>
-                                <span>
-                                    ${totalArticleCount}개 기사를 ${newsCount}개 주제로 정리해드렸어요.
-                                </span>
-                            </div>
-                            `;
-                        $(container.summary).append(spanItem);
-                    }
-                });
-
-                // 리스트 항목 클릭 이벤트 추가
-                $('.list-item').click(function() {
-                    const link = $(this).data('link');
-                    window.open(link, '_blank'); // 새 탭에서 링크 열기
+                updateNewsContainers(newsData, {
+                    keyword1: data.keyword1,
+                    keyword2: data.keyword2,
+                    keyword3: data.keyword3
                 });
             })
             .catch(error => {
                 console.error('Fetch error:', error);
             });
-        });
+    });
 
-
-        //Calendar script
-        $(function() {
-            $.datepicker.setDefaults({
-                    closeText: "닫기",
-                    currentText: "오늘",
-                    prevText: '이전 달',
-                    nextText: '다음 달',
-                    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-                    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-                    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-                    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-                    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-                    weekHeader: "주",
-                    yearSuffix: '년'
+    //Calendar script
+    $(function() {
+        $.datepicker.setDefaults({
+                closeText: "닫기",
+                currentText: "오늘",
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                weekHeader: "주",
+                yearSuffix: '년'
+            });
+        $("#datepicker").datepicker({
+            dateFormat: "yy.mm.dd",
+            onSelect: function(dateText) {
+                fetchData('/getMyKeyword/', { cust_id: cust_id, newdate: dateText})
+                .then(data => {
+                    updateKeywords(data);
+                    return fetchData('/getTodayNewsList/', {
+                        cust_id: cust_id,
+                        day: data.date,
+                        keyword1: data.keyword1,
+                        keyword2: data.keyword2,
+                        keyword3: data.keyword3
+                    }).then(newsData => ({ newsData, data }));
+                })
+                .then(({ newsData, data }) => {
+                    updateNewsContainers(newsData, {
+                        keyword1: data.keyword1,
+                        keyword2: data.keyword2,
+                        keyword3: data.keyword3
+                    });
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
                 });
-            $("#datepicker").datepicker({
-                dateFormat: "yy.mm.dd",
-                onSelect: function(dateText) {
-                    $("#date").text(dateText);
-                },
-            }).hide(); // 초기에는 숨깁니다.
+            },
+        }).hide(); // 초기에는 숨깁니다.
 
-            $("#datepicker-button").on("click", function() {
-                $("#datepicker").datepicker("show"); // 버튼 클릭 시 달력 표시
-            });
-
-            // 클릭 시 datepicker가 사라지지 않도록
-            $("#datepicker").on("focus", function() {
-                $(this).datepicker("show");
-            });
+        $("#datepicker-button").on("click", function() {
+            $("#datepicker").datepicker("show"); // 버튼 클릭 시 달력 표시
         });
+
+        // 클릭 시 datepicker가 사라지지 않도록
+        $("#datepicker").on("focus", function() {
+            $(this).datepicker("show");
+        });
+    });
 
 </script>

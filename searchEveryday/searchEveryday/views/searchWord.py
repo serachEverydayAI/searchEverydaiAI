@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import pandas as pd
 
-from ..common.util import get_today, day_mapping
+from ..common.util import get_today, day_mapping, remove_splitDate
 from ..config import URI, DB_PATH, DatabaseConnection
 from ..sql.insert import insertCustKeyword
 from ..sql.select import getSeCustKeyword_WithCust_id, \
@@ -114,9 +114,11 @@ def getMyKeyword(request):
         data = json.loads(request.body)
         cust_id = data.get('cust_id')
         df = getCustKeyword(cust_id)
+        newdate = data.get('newdate')
         _format = '%Y%m%d'
-        today = get_today(_format)
-        response_data = {'success': False, 'date': today,'korean_day':day_mapping(today, _format)}
+        date = get_today(_format) if newdate is None else remove_splitDate(newdate,'.')
+
+        response_data = {'success': False, 'date': date,'korean_day':day_mapping(date, _format)}
         if not df.empty:
             cust_info = df.iloc[0]
             keyword_list = cust_info["keyword"].split("|") if cust_info.get("keyword") else []

@@ -9,19 +9,37 @@
     </div>
     {% include '../common/mobileTabNavi.html' %}
     <script>
+        const beeImgSrc = "{% static 'image/icon/bee.png' %}";
+        console.log("MY")
+
         $(document).ready(function() {
             const $tabContent = $('#tabContent');
+            let currentUrl = ''; // 현재 탭의 URL을 저장할 변수
+            const tabContents = {}; // 탭 콘텐츠를 저장할 객체
+
             function loadContent(url) {
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function(response) {
-                        $tabContent.html(response).addClass('active');
-                    },
-                    error: function() {
-                        $tabContent.html('<p>컨텐츠를 로드하는 중 오류가 발생했습니다.</p>').addClass('active');
-                    }
-                });
+                if (currentUrl === url) {
+                    return;
+                }
+                if (tabContents[url]) {
+                    // 이미 로드된 콘텐츠가 있는 경우, 그것을 사용
+                    $tabContent.html(tabContents[url]).addClass('active');
+                    currentUrl = url; // 현재 URL 업데이트
+                } else {
+                    // 로드된 콘텐츠가 없는 경우, 서버에서 요청
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function(response) {
+                            tabContents[url] = response; // 로드된 콘텐츠 저장
+                            $tabContent.html(response).addClass('active');
+                            currentUrl = url; // 현재 URL 업데이트
+                        },
+                        error: function() {
+                            $tabContent.html('<p>컨텐츠를 로드하는 중 오류가 발생했습니다.</p>').addClass('active');
+                        }
+                    });
+                }
             }
 
             $('.mobile-bottom-nav__item').on('click', function() {
@@ -37,7 +55,8 @@
                 const initialUrl = $firstTab.data('url');
                 loadContent(initialUrl);
             }
-
         });
+
+
     </script>
 {% endblock%}

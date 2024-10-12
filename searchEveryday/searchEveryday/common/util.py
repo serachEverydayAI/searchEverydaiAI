@@ -20,3 +20,6 @@ def day_mapping(date_str, _format):
     weekday = today.weekday()
     korean_day = days_in_korean[weekday]
     return korean_day
+
+def remove_splitDate(date_string, split):
+    return date_string.replace(split, '')

@@ -10,6 +10,7 @@
     --dark-white: #ebeae8;
 
     --gray: #707070;
+    --black: #0a0a0a;
 
     /* Border */
     --main-border: 2px solid #3498db;
@@ -91,3 +92,15 @@
 .toast_color {
     background-color: #dbdbdb;
 }
+
+/* CALENDAR COLOR */
+.ui-datepicker .ui-datepicker-header {
+   background: none;
+   color: var(--black);
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+    background: var(--main-color);
+    color: var(--black);
+}
+

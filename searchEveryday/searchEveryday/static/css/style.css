@@ -296,3 +296,11 @@
 .list-line{
     border-top: 1px solid var(--bg-dark-input-color);
 }
+
+/* CALENDAR */
+.ui-datepicker table thead {
+    display: none;
+}
+.ui-widget {
+    font-size: 18px;
+}
