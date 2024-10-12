@@ -135,8 +135,8 @@ function updateNewsContainers(newsData, keywords) {
             const isLastItem = index === newsCount - 1;
             const listItem = `
                 <div class="list-item" data-link="${newsItem.link}">
-                    <div class="news-item" id="newsTitle${index + 1}"><b>${newsItem.title}</b></div>
-                    <div class="news-press ellipsis" id="newsPress${index + 1}">${newsItem.press}</div>
+                    <div class="news-item" id="newsTitle${index + 1}">${newsItem.title}</div>
+                    <div class="news-press ellipsis font-darkgray-color" id="newsPress${index + 1}">${newsItem.press}</div>
                 </div>
                 <hr class="list-line" style="${isLastItem ? 'margin-bottom: 50px;' : ''}">
             `;

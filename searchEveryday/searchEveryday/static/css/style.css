@@ -83,25 +83,17 @@
 
 
 /* FONT */
-/*
 @font-face {
-    font-family: 'Batang';
-    src: url('/static/fonts/batang.ttc') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-*/
-
-@font-face {
-    font-family: 'RIDIBatang';
-    src: url('/static/fonts/RIDIBatang.otf') format('truetype');
+    font-family: 'batang';
+    src: url('/static/fonts/batang.otf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
-.login-font {
-    font-family: 'RIDIBatang', serif;
+.login-font, .article_font {
+    font-family: 'batang', serif;
 }
+
 .font-align-center {
     text-align: center;
 }
@@ -115,6 +107,9 @@
     font-weight: lighter;
     font-style: normal;
     font-size: 12px;
+}
+.font-bold {
+    font-weight: bold;
 }
 
 
@@ -134,7 +129,7 @@
 .mobile-bottom-nav__item {
   flex-grow: 1;
   text-align: center;
-  font-size: 10px;
+  font-size: 12px;
   display: flex;
   flex-direction: column;
   justify-content: center;
